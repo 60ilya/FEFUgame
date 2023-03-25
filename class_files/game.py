@@ -4,20 +4,20 @@ import math
 
 class Game():
 
-    def array_check(map, x, y, n):
-        if map[x][y] == 1:
-            if y + 1 != 9 and map[x][y + 1] == 0:
-                if map[x][y + 2] == 0 and map[x + 1][y + 1] == 0 and map[x - 1][y + 1] == 0:
-                    map[x][y + 1] = n
-            elif y - 1 != -1 and map[x][y - 1] == 0:
-                if map[x][y - 2] == 0 and map[x + 1][y - 1] == 0 and map[x - 1][y - 1] == 0:
-                    map[x][y - 1] = n
-            elif x + 1 != 9 and map[x + 1][y] == 0:
-                if map[x + 2][y] == 0 and map[x + 1][y + 1] == 0 and map[x + 1][y - 1] == 0:
-                    map[x + 1][y] = n
-            elif x - 1 != -1 and map[x - 1][y] == 0:
-                if map[x - 2][y] == 0 and map[x - 1][y + 1] == 0 and map[x - 1][y - 1] == 0:
-                    map[x - 1][y] = n
+    # def array_check(map, x, y, n):
+    #     # if y + 1 != 9 and map[x][y + 1] == 0:
+    #     #     if map[x][y + 2] == 0 and map[x + 1][y + 1] == 0 and map[x - 1][y + 1] == 0:
+    #     #         map[x][y + 1] = n
+    #     # elif y - 1 != -1 and map[x][y - 1] == 0:
+    #     #     if map[x][y - 2] == 0 and map[x + 1][y - 1] == 0 and map[x - 1][y - 1] == 0:
+    #     #         map[x][y - 1] = n
+    #     # elif x + 1 != 9 and map[x + 1][y] == 0:
+    #     #     if map[x + 2][y] == 0 and map[x + 1][y + 1] == 0 and map[x + 1][y - 1] == 0:
+    #     #         map[x + 1][y] = n
+    #     # elif x - 1 != -1 and map[x - 1][y] == 0:
+    #     #     if map[x - 2][y] == 0 and map[x - 1][y + 1] == 0 and map[x - 1][y - 1] == 0:
+    #     #         map[x - 1][y] = n
+
     class map():
 
         def rand_map():
@@ -160,21 +160,23 @@ class Game():
                 if flag == True:
                     break
             
+
             max_x = 0
             max_y = 0
             max_ans = 0
 
-            for x in range(0, 9):
-                for y in range(0, 9):
+            for y in range(9):
+                for x in range(9):
                     if map[x][y] == 1:
                         ans = math.sqrt(pow(abs(4 - x), 2) + pow(abs(4 - y), 2))
                         if ans > max_ans:
                             max_ans = ans
                             max_x = x
                             max_y = y
-            print(max_ans)
+            print(max_x, max_y)
+            map[max_x][max_y] = 4
 
-            Game.array_check(map, max_x, max_y, 4)
+            # Game.array_check(map, max_x, max_y, 4)
             
 
             max_x = 0
@@ -182,17 +184,19 @@ class Game():
             max_ans = 0
             ans = 0
 
-            for x in range(0, 9):
-                for y in range(0, 9):
+            for y in range(9):
+                for x in range(9):
                     if map[x][y] == 1 and map[x][y] != 4 and map[x + 1][y] != 4 and map[x - 1][y] != 4 and map[x][y + 1] != 4 and map[x][y - 1] != 4:
                         ans = math.sqrt(pow(abs(4 - x), 2) + pow(abs(4 - y), 2))
                         if ans > max_ans:
                             max_ans = ans
                             max_x = x
                             max_y = y
-            print(max_ans)
-            Game.array_check(map, max_x, max_y, 5)
+            print(max_x, max_y)
+            map[max_x][max_y] = 5
             
+            for i in range(10):
+                print(map[i])
 
             print("""                     0 - комнаты нет
                      1 - непройденная комната
@@ -200,8 +204,7 @@ class Game():
                      3 - пройденная комната
                      4 - босс
                      5 - предмет""")
-            for i in range(10):
-                print(map[i])
+            
 
             return map
 
