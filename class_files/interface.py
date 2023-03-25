@@ -1,7 +1,7 @@
 import pygame
 from class_files.game import Game
 from class_files.classes import Player
-import time
+from const import door_up, door_down, door_left, door_right
 
 
 class Interface():
@@ -11,7 +11,6 @@ class Interface():
         screen.blit(text, (x, y))
 
     def print_stat(screen, player):
-        # heart = pygame.image.load("") 
         font_color=(0, 0, 0)
         font_type = "fonts/FerdinandFont-Regular.ttf"
         font_size = 25
@@ -150,11 +149,6 @@ class Interface():
             vanechka = pygame.image.load("img/players/big/vanechka.png")
             shaman = pygame.image.load("img/players/big/shaman.png")
             dimochka = pygame.image.load("img/players/big/dimochka.png")
-
-
-
-
-
 
             choose = 1
 

@@ -23,3 +23,8 @@ WIDTH = 1280
 HEIGHT = 768
 
 running = True
+
+door_up = (534, 164)
+door_down = (534, 646)
+door_left = (200, 346)
+door_right = (1000, 346)
