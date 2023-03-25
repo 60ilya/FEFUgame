@@ -19,6 +19,20 @@ class Game():
                 if map[x - 2][y] == 0 and map[x - 1][y + 1] == 0 and map[x - 1][y - 1] == 0:
                     map[x - 1][y] = n
     class map():
+        def room_inv_block(map, x, y, player):
+            print(x, y)
+            if map[x - 1][y] == 0:
+                if player.y < 222:
+                    player.y = 222
+            if map[x + 1][y] == 0:
+                if player.y > 614:
+                    player.y = 614
+            if map[x][y - 1] == 0:
+                if player.x < 244:
+                    player.x = 244
+            if map[x][y + 1] == 0:
+                if player.x > 972:
+                    player.x = 972
 
         def rand_map():
             count = 0
@@ -164,8 +178,8 @@ class Game():
             max_y = 0
             max_ans = 0
 
-            for x in range(0, 9):
-                for y in range(0, 9):
+            for y in range(0, 9):
+                for x in range(0, 9):
                     if map[x][y] == 1:
                         ans = math.sqrt(pow(abs(4 - x), 2) + pow(abs(4 - y), 2))
                         if ans > max_ans:
@@ -182,8 +196,8 @@ class Game():
             max_ans = 0
             ans = 0
 
-            for x in range(0, 9):
-                for y in range(0, 9):
+            for y in range(0, 9):
+                for x in range(0, 9):
                     if map[x][y] == 1 and map[x][y] != 4 and map[x + 1][y] != 4 and map[x - 1][y] != 4 and map[x][y + 1] != 4 and map[x][y - 1] != 4:
                         ans = math.sqrt(pow(abs(4 - x), 2) + pow(abs(4 - y), 2))
                         if ans > max_ans:
