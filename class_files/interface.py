@@ -9,6 +9,16 @@ class Interface():
         font_type = pygame.font.Font(font_type, font_size)
         text = font_type.render(message, True, font_color)
         screen.blit(text, (x, y))
+    def print_stat(screen, player):
+        font_color=(0, 0, 0)
+        font_type = "fonts/FerdinandFont-Regular.ttf"
+        font_size = 25
+        font_color=(0, 0, 0)
+        font_type = pygame.font.Font(font_type, font_size)
+        text = font_type.render("Hp: " + str(player.hp), True, font_color)
+        screen.blit(text, (50, 50))
+        text = font_type.render("Dmg: " + str(player.damage), True, font_color)
+        screen.blit(text, (50, 100))
     
     on = pygame.image.load("img/sound/on.png")
     off = pygame.image.load("img/sound/off.png")
@@ -205,11 +215,14 @@ class Interface():
                         if event.key == pygame.K_SPACE:
                             print(choose)
                             if choose == 0:
-                                Interface.game.main_game(screen, vanechka_small, 2, 4)
+                                player = Player(vanechka_small, None, 2, 4, 0.9, 0.6, None, 540, 300)            
+                                Interface.game.main_game(screen, player)
                             elif choose == 1:
-                                Interface.game.main_game(screen, dimochka_small, 3, 3)
+                                player = Player(dimochka_small, None, 3, 3, 0.9, 0.6, None, 540, 300) 
+                                Interface.game.main_game(screen, player)
                             else:
-                                Interface.game.main_game(screen, shaman_small, 4, 2)
+                                player = Player(shaman_small, None, 4, 2, 0.9, 0.6, None, 540, 300)
+                                Interface.game.main_game(screen, player)
 
                 pygame.display.update()
 
@@ -262,13 +275,12 @@ class Interface():
                 
 
     class game():
-        def main_game(screen, texture, hp, damage):
+        def main_game(screen, player):
             room_x = 4
             room_y = 4
             running = True
 
-            player = Player(texture, None, hp, damage, 0.6, 0.4, None, 540, 300)
-            player.hitbox = texture.get_rect(topleft = (player.x, player.y))
+            player.hitbox = player.texture.get_rect(topleft = (player.x, player.y))
 
             map = Game.map.rand_map()
             room = pygame.image.load(Game.map.room_choose(map, room_x, room_y))
@@ -285,7 +297,9 @@ class Interface():
 
                 screen.blit(player.texture, (player.x, player.y))
                 Player.moving(player)
-
+                
+                Interface.print_stat(screen, player)
+                
                 pygame.display.update()
 
                 for event in pygame.event.get():
