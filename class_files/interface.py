@@ -9,6 +9,7 @@ class Interface():
         font_type = pygame.font.Font(font_type, font_size)
         text = font_type.render(message, True, font_color)
         screen.blit(text, (x, y))
+
     def print_stat(screen, player):
         # heart = pygame.image.load("") 
         font_color=(0, 0, 0)
@@ -292,6 +293,7 @@ class Interface():
 
 
             while running:
+                Game.map.room_inv_block(map, room_x, room_y, player)
                 
                 Interface.minimap.room_minimap(map, room)
                 Interface.minimap.player_minimap(map, room)
