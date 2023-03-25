@@ -10,7 +10,7 @@ class Interface():
         text = font_type.render(message, True, font_color)
         screen.blit(text, (x, y))
     def print_stat(screen, player):
-        # heart = pygame.image.load("")
+        # heart = pygame.image.load("") 
         font_color=(0, 0, 0)
         font_type = "fonts/FerdinandFont-Regular.ttf"
         font_size = 25
