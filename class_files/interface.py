@@ -10,7 +10,7 @@ class Interface():
         text = font_type.render(message, True, font_color)
         screen.blit(text, (x, y))
     def print_stat(screen, player):
-        # heart = pygame.image.load("")
+        # heart = pygame.image.load("") 
         font_color=(0, 0, 0)
         font_type = "fonts/FerdinandFont-Regular.ttf"
         font_size = 25
@@ -22,6 +22,8 @@ class Interface():
             screen.blit(player.texture, (100 + i*80, 30))
         text = font_type.render("Dmg: " + str(player.damage), True, font_color)
         screen.blit(text, (50, 100))
+        text = font_type.render("Speed: " + str(player.speed), True, font_color)
+        screen.blit(text, (50, 150))
     
     on = pygame.image.load("img/sound/on.png")
     off = pygame.image.load("img/sound/off.png")
@@ -148,9 +150,7 @@ class Interface():
             shaman = pygame.image.load("img/players/big/shaman.png")
             dimochka = pygame.image.load("img/players/big/dimochka.png")
 
-            dimochka_small = pygame.image.load("img/players/dimochka.png")
-            vanechka_small = pygame.image.load("img/players/vanechka.png")
-            shaman_small = pygame.image.load("img/players/shaman.png")
+
 
 
 
@@ -217,15 +217,7 @@ class Interface():
 
                         if event.key == pygame.K_SPACE:
                             print(choose)
-                            if choose == 0:
-                                player = Player(vanechka_small, None, 2, 4, 0.9, 0.6, None, 540, 300)            
-                                Interface.game.main_game(screen, player)
-                            elif choose == 1:
-                                player = Player(dimochka_small, None, 3, 3, 0.9, 0.6, None, 540, 300) 
-                                Interface.game.main_game(screen, player)
-                            else:
-                                player = Player(shaman_small, None, 4, 2, 0.9, 0.6, None, 540, 300)
-                                Interface.game.main_game(screen, player)
+                            Interface.game.main_game(screen, choose)
 
                 pygame.display.update()
 
@@ -278,10 +270,20 @@ class Interface():
                 
 
     class game():
-        def main_game(screen, player):
+        def main_game(screen, choose):
             room_x = 4
             room_y = 4
             running = True
+            
+            if choose == 0:
+                vanechka_small = pygame.image.load("img/players/vanechka.png")
+                player = Player(vanechka_small, None, 2, 4, 0.9, 0.6, None, 540, 300)            
+            elif choose == 1:
+                dimochka_small = pygame.image.load("img/players/dimochka.png")
+                player = Player(dimochka_small, None, 3, 3, 0.9, 0.6, None, 540, 300) 
+            else:
+                shaman_small = pygame.image.load("img/players/shaman.png")
+                player = Player(shaman_small, None, 4, 2, 0.9, 0.6, None, 540, 300)
 
             player.hitbox = player.texture.get_rect(topleft = (player.x, player.y))
 
@@ -316,5 +318,8 @@ class Interface():
                                 pygame.mixer.music.pause()
                             else:
                                 pygame.mixer.music.unpause()
+                        if event.key == pygame.K_r:
+                            Interface.game.main_game(screen, choose)
+                            
 
 
