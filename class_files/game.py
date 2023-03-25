@@ -177,6 +177,8 @@ class Game():
             map[max_x][max_y] = 4
        
 
+
+
             max_x = 0
             max_y = 0
             max_ans = 0
