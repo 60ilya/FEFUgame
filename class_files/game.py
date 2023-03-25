@@ -20,19 +20,18 @@ class Game():
                     map[x - 1][y] = n
     class map():
         def room_inv_block(map, x, y, player):
-            print(x, y)
             if map[x - 1][y] == 0:
                 if player.y < 222:
-                    player.y = 222
+                    player.y = 223
             if map[x + 1][y] == 0:
                 if player.y > 614:
-                    player.y = 614
+                    player.y = 613
             if map[x][y - 1] == 0:
                 if player.x < 244:
-                    player.x = 244
+                    player.x = 245
             if map[x][y + 1] == 0:
                 if player.x > 972:
-                    player.x = 972
+                    player.x = 971
 
         def rand_map():
             count = 0
