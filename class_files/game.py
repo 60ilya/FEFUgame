@@ -175,9 +175,7 @@ class Game():
                             max_y = y
             print(max_x, max_y)
             map[max_x][max_y] = 4
-
-            # Game.array_check(map, max_x, max_y, 4)
-            
+       
 
             max_x = 0
             max_y = 0
@@ -194,7 +192,7 @@ class Game():
                             max_y = y
             print(max_x, max_y)
             map[max_x][max_y] = 5
-            
+
             for i in range(10):
                 print(map[i])
 
