@@ -150,9 +150,7 @@ class Interface():
             shaman = pygame.image.load("img/players/big/shaman.png")
             dimochka = pygame.image.load("img/players/big/dimochka.png")
 
-            dimochka_small = pygame.image.load("img/players/dimochka.png")
-            vanechka_small = pygame.image.load("img/players/vanechka.png")
-            shaman_small = pygame.image.load("img/players/shaman.png")
+
 
 
 
@@ -219,15 +217,7 @@ class Interface():
 
                         if event.key == pygame.K_SPACE:
                             print(choose)
-                            if choose == 0:
-                                player = Player(vanechka_small, None, 2, 4, 0.9, 0.6, None, 540, 300)            
-                                Interface.game.main_game(screen, player)
-                            elif choose == 1:
-                                player = Player(dimochka_small, None, 3, 3, 0.9, 0.6, None, 540, 300) 
-                                Interface.game.main_game(screen, player)
-                            else:
-                                player = Player(shaman_small, None, 4, 2, 0.9, 0.6, None, 540, 300)
-                                Interface.game.main_game(screen, player)
+                            Interface.game.main_game(screen, choose)
 
                 pygame.display.update()
 
@@ -280,10 +270,20 @@ class Interface():
                 
 
     class game():
-        def main_game(screen, player):
+        def main_game(screen, choose):
             room_x = 4
             room_y = 4
             running = True
+            
+            if choose == 0:
+                vanechka_small = pygame.image.load("img/players/vanechka.png")
+                player = Player(vanechka_small, None, 2, 4, 0.9, 0.6, None, 540, 300)            
+            elif choose == 1:
+                dimochka_small = pygame.image.load("img/players/dimochka.png")
+                player = Player(dimochka_small, None, 3, 3, 0.9, 0.6, None, 540, 300) 
+            else:
+                shaman_small = pygame.image.load("img/players/shaman.png")
+                player = Player(shaman_small, None, 4, 2, 0.9, 0.6, None, 540, 300)
 
             player.hitbox = player.texture.get_rect(topleft = (player.x, player.y))
 
@@ -318,5 +318,8 @@ class Interface():
                                 pygame.mixer.music.pause()
                             else:
                                 pygame.mixer.music.unpause()
+                        if event.key == pygame.K_r:
+                            Interface.game.main_game(screen, choose)
+                            
 
 
