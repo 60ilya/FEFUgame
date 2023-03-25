@@ -10,13 +10,16 @@ class Interface():
         text = font_type.render(message, True, font_color)
         screen.blit(text, (x, y))
     def print_stat(screen, player):
+        # heart = pygame.image.load("")
         font_color=(0, 0, 0)
         font_type = "fonts/FerdinandFont-Regular.ttf"
         font_size = 25
         font_color=(0, 0, 0)
         font_type = pygame.font.Font(font_type, font_size)
-        text = font_type.render("Hp: " + str(player.hp), True, font_color)
+        text = font_type.render("Hp: ", True, font_color)
         screen.blit(text, (50, 50))
+        for i in range(player.hp):
+            screen.blit(player.texture, (100 + i*80, 30))
         text = font_type.render("Dmg: " + str(player.damage), True, font_color)
         screen.blit(text, (50, 100))
     
