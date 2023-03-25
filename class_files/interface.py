@@ -1,34 +1,56 @@
 import pygame
+from pyvidplayer import Video
 from class_files.game import Game
 from class_files.classes import Player
 from const import door_up, door_down, door_left, door_right
 
 
 class Interface():
+
+    on = pygame.image.load("img/sound/on.png")
+    off = pygame.image.load("img/sound/off.png")
+    flPause = False
+
     def print_text(screen, message, x, y, font_color=(0, 0, 0), font_type = "", font_size = 0):
         font_type = pygame.font.Font(font_type, font_size)
         text = font_type.render(message, True, font_color)
         screen.blit(text, (x, y))
 
     def print_stat(screen, player):
-        font_color=(0, 0, 0)
-        font_type = "fonts/FerdinandFont-Regular.ttf"
-        font_size = 25
-        font_color=(0, 0, 0)
-        font_type = pygame.font.Font(font_type, font_size)
-        text = font_type.render("Hp: ", True, font_color)
-        screen.blit(text, (50, 50))
+        Interface.print_text(screen, "hp", 50, 50, "Red", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 70)
+        
         for i in range(player.hp):
-            screen.blit(player.texture, (100 + i*80, 30))
-        text = font_type.render("Dmg: " + str(player.damage), True, font_color)
-        screen.blit(text, (50, 100))
-        text = font_type.render("Speed: " + str(player.speed), True, font_color)
-        screen.blit(text, (50, 150))
-    
-    on = pygame.image.load("img/sound/on.png")
-    off = pygame.image.load("img/sound/off.png")
-    flPause = False
+            screen.blit(player.texture, (120 + i*80, 50))
+        Interface.print_text(screen, "dmg", 30, 340, "Yellow", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 30)
+        # Interface.print_text(screen, "spd", 30, 300, "Yellow", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 30)
+        Interface.print_text(screen, f"{player.damage}", 100, 340, "White", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 40)
+        # Interface.print_text(screen, f"{player.speed}", 100, 300, "White", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 40)  
 
+    def intro(screen, running):
+        intro2 = Video("video/intro_max.mp4")
+        intro2.set_size((1280, 768)) 
+        flag = True
+        
+
+        while running:
+            if intro2.active == False:
+                Interface.menu.main_menu(screen, running)
+
+            intro2.draw(screen, (0, 0))
+
+            Interface.print_text(screen, "Press SPACE to skip intro", 900, 0, "Grey", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 30) 
+            
+
+            pygame.display.update()
+
+            for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
+                        pygame.quit()
+                    elif event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_SPACE:
+                            intro2.close()
+                            Interface.menu.main_menu(screen, running)
 
     class minimap():
         def room_minimap(map, room):
@@ -214,6 +236,9 @@ class Interface():
                             print(choose)
                             Interface.game.main_game(screen, choose)
 
+                        if event.key == pygame.K_ESCAPE:
+                            Interface.menu.main_menu(screen, running)
+
                 pygame.display.update()
 
 
@@ -221,7 +246,8 @@ class Interface():
 
             pygame.mixer.music.load("music/main.mp3")
             pygame.mixer.music.play(-1)
-            FPS = 15
+
+            FPS = 60
             direct_y = 1
             clock = pygame.time.Clock()
 
@@ -261,6 +287,10 @@ class Interface():
                                 pygame.mixer.music.unpause()
                         if event.key == pygame.K_SPACE:
                             Interface.menu.player_choose(screen, running)
+
+                        if event.key == pygame.K_ESCAPE:
+                            pygame.quit()
+                            
 
                 
 
@@ -316,6 +346,9 @@ class Interface():
                                 pygame.mixer.music.unpause()
                         if event.key == pygame.K_r:
                             Interface.game.main_game(screen, choose)
+                        
+                        if event.key == pygame.K_ESCAPE:
+                            Interface.menu.main_menu(screen, running)
                             
 
 
