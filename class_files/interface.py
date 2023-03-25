@@ -22,6 +22,8 @@ class Interface():
             screen.blit(player.texture, (100 + i*80, 30))
         text = font_type.render("Dmg: " + str(player.damage), True, font_color)
         screen.blit(text, (50, 100))
+        text = font_type.render("Speed: " + str(player.speed), True, font_color)
+        screen.blit(text, (50, 150))
     
     on = pygame.image.load("img/sound/on.png")
     off = pygame.image.load("img/sound/off.png")
