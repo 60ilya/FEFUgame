@@ -18,7 +18,6 @@ class Player(Character):
     def moving(self):
         
         keys = pygame.key.get_pressed()
-# переработать систему стен (сделать их объектами)
         if keys[pygame.K_w] and keys[pygame.K_a]:
 
             if not(self.x > 244 and self.x < 972):

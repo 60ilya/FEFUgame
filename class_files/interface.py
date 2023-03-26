@@ -163,6 +163,18 @@ class Interface():
             
             return room, room_x, room_y
         
+        def treasure_room(map, screen):
+            
+
+            for y in range(10):
+                for x in range(10):
+                    if map[x][y] == 5:
+                        tx, ty = x, y
+                        break
+
+            if map[tx][ty] == 2:
+                screen.blit()
+        
 
     class menu():
         def player_choose(screen, running):
