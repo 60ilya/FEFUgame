@@ -32,13 +32,12 @@ class Player(Character):
             self.hp += item.heal_amount
         elif isinstance(item, SpeedBoost):
             self.speed += item.duration
-        elif isinstance(item, StrengthBoost):
+        elif isinstance(item, DamageBoost):
             self.damage += item.duration
 
     def moving(self):
         
         keys = pygame.key.get_pressed()
-# переработать систему стен (сделать их объектами)
         if keys[pygame.K_w] and keys[pygame.K_a]:
 
             if not(self.x > 244 and self.x < 972):
@@ -132,15 +131,15 @@ class Enemy(Character):
 
 
 class Warrior(Player):
-    def __init__(self, name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y):
-        super().__init__(name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y)
+    def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y):
+        super().__init__(texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y)
 
 
 
 
 class Archer(Player):
-    def __init__(self, name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y):
-        super().__init__(name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y)
+    def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y):
+        super().__init__(texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y)
     
 
 
@@ -153,13 +152,9 @@ class Mob(Enemy):
         pass
 
 class Boss(Enemy):
-    def __init__(self, name, hp, damage, texture, x, y, phrases):
+    def __init__(self, name, hp, damage, texture, x, y):
         super().__init__(name, hp, damage, texture, x, y)
-        self.phrases = phrases # Список строк
 
-    def speak(self):
-        pass
-        # print(f"{self.name}: {random.choice(self.phrases)}")
 
 class Arrow:
     def __init__(self, speed, damage):
@@ -168,37 +163,59 @@ class Arrow:
 
 
 class Item:
-    def __init__(self, texture, x, y):
+    def __init__(self, texture, hitbox = None):
         self.texture = texture
-        self.x = x
-        self.y = y
+        
+    def create_item(gold_x, gold_y, map, item, screen, player):
+        if player.shield == False:
+            if map[gold_x][gold_y] == 2:
+                screen.blit(item, (570, 400))
 
-    def use(self, character):
-        pass
+    def collision(item_hitbox, player, gold_x, gold_y, map):
+        if player.hitbox.colliderect(item_hitbox):
+            if map[gold_x][gold_y] == 2:
+                player.shield = True
+                gold_x, gold_y = 9, 9
+
+
+
 
 
 class HealthPotion(Item):
-    def __init__(self, x, y):
-        super().__init__("health_potion.png", x, y)
-        self.heal_amount = 50
+    def __init__(self, texture):
+        super().__init__(texture)
+        self.heal_amount = 1
+
+    def create_item(gold_x, gold_y, map, item, screen):
+        if map[gold_x][gold_y] == 2:
+            screen.blit(item, (570, 400))
 
     def use(self, character):
         character.heal(self.heal_amount)
 
 
 class SpeedBoost(Item):
-    def __init__(self, x, y):
-        super().__init__("speed_boost.png", x, y)
-        self.duration = 10
+    def __init__(self, texture):
+        super().__init__(texture)
+        self.duration = 0.5
+
+    def create_item(gold_x, gold_y, map, item, screen):
+        if map[gold_x][gold_y] == 2:
+            screen.blit(item, (570, 400))
+
 
     def use(self, character):
-        character.speed += 10
+        character.speed += 0.5
 
 
-class StrengthBoost(Item):
-    def __init__(self, x, y):
-        super().__init__("strength_boost.png", x, y)
-        self.duration = 10
+class DamageBoost(Item):
+    def __init__(self, texture):
+        super().__init__(texture)
+        self.duration = 2
+
+    def create_item(gold_x, gold_y, map, item, screen):
+        if map[gold_x][gold_y] == 2:
+            screen.blit(item, (570, 400))
 
     def use(self, character):
-        character.strength += 10
+        character.strength += 2
