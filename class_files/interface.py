@@ -1,8 +1,9 @@
 import pygame
 from pyvidplayer import Video
 from class_files.game import Game
-from class_files.classes import Player
+from class_files.classes import Player, SpeedBoost, HealthPotion, DamageBoost, Item, Archer, Warrior
 from const import door_up, door_down, door_left, door_right
+import random
 
 
 class Interface():
@@ -125,6 +126,8 @@ class Interface():
                 player.x = 965
                 player.y = 408
                 Interface.minimap.player_minimap(map, room)
+                for i in range(10):
+                    print(map[i])
 
             if player.x > 1000 and map[room_x][room_y + 1] != 0:
                 if map[room_x][room_y] not in range(4, 6):
@@ -137,6 +140,8 @@ class Interface():
                 player.x = 258
                 player.y = 418
                 Interface.minimap.player_minimap(map, room)
+                for i in range(10):
+                    print(map[i])
 
             if player.y < 195 and map[room_x - 1][room_y] != 0:
                 if map[room_x][room_y] not in range(4, 6):
@@ -148,6 +153,8 @@ class Interface():
                 player.x = 611
                 player.y = 603
                 Interface.minimap.player_minimap(map, room)
+                for i in range(10):
+                    print(map[i])
 
             if player.y > 640 and map[room_x + 1][room_y] != 0:
                 if map[room_x][room_y] not in range(4, 6):
@@ -159,21 +166,36 @@ class Interface():
                 player.x = 604
                 player.y = 224
                 Interface.minimap.player_minimap(map, room)
+                for i in range(10):
+                    print(map[i])
 
             
             return room, room_x, room_y
         
-        def treasure_room(map, screen):
-            
+        def init_treasure_room(map, screen):
+            tx, ty = 0, 0
 
             for y in range(10):
                 for x in range(10):
                     if map[x][y] == 5:
                         tx, ty = x, y
-                        break
 
-            if map[tx][ty] == 2:
-                screen.blit()
+            item1 = DamageBoost("img/items/1.png")
+            item1_photo = pygame.image.load(item1.texture)
+            item2 = HealthPotion("img/items/2.png")
+            item2_photo = pygame.image.load(item2.texture)
+            item3 = DamageBoost("img/items/3.png")
+            item3_photo = pygame.image.load(item3.texture)
+            item4 = Item("img/items/4.png")
+            item4_photo = pygame.image.load(item4.texture)
+            item5 = SpeedBoost("img/items/5.png")
+            item5_photo = pygame.image.load(item5.texture)
+
+            item_list = [item1_photo, item2_photo, item3_photo, item4_photo, item5_photo]
+            main_item = random.choice(item_list)
+
+            return tx, ty, main_item
+        
         
 
     class menu():
@@ -314,21 +336,25 @@ class Interface():
             
             if choose == 0:
                 vanechka_small = pygame.image.load("img/players/vanechka.png")
-                player = Player(vanechka_small, None, 2, 4, 0.9, 0.6, None, 540, 300)            
+                player = Warrior(vanechka_small, None, 2, 4, 0.9, 0.6, False, 540, 300)            
             elif choose == 1:
                 dimochka_small = pygame.image.load("img/players/dimochka.png")
-                player = Player(dimochka_small, None, 3, 3, 0.9, 0.6, None, 540, 300) 
+                player = Warrior(dimochka_small, None, 3, 3, 0.9, 0.6, False, 540, 300) 
             else:
                 shaman_small = pygame.image.load("img/players/shaman.png")
-                player = Player(shaman_small, None, 4, 2, 0.9, 0.6, None, 540, 300)
+                player = Archer(shaman_small, None, 4, 2, 0.9, 0.6, False, 540, 300)
 
-            player.hitbox = player.texture.get_rect(topleft = (player.x, player.y))
+            
 
             map = Game.map.rand_map()
             room = pygame.image.load(Game.map.room_choose(map, room_x, room_y))
 
+            gold_x, gold_y, item = Interface.room.init_treasure_room(map, screen)
+            item_hitbox = item.get_rect(topleft = (570, 400))
 
             while running:
+                player.hitbox = player.texture.get_rect(topleft = (player.x, player.y))
+
                 Game.map.room_inv_block(map, room_x, room_y, player)
                 
                 Interface.minimap.room_minimap(map, room)
@@ -341,7 +367,11 @@ class Interface():
                 screen.blit(player.texture, (player.x, player.y))
                 Player.moving(player)
                 
-                Interface.print_stat(screen, player)
+                # Interface.print_stat(screen, player)
+
+                Item.create_item(gold_x, gold_y, map, item, screen, player)
+                Item.collision(item_hitbox, player, gold_x, gold_y, map)
+                
                 
                 pygame.display.update()
 
