@@ -10,11 +10,31 @@ class Character():
         self.diagonal_speed = diagonal_speed
         self.x = x
         self.y = y
+        self.alive = True
 
+    def die(self):
+        self.alive = False
+        del self
+
+    def take_damage(self, damage):
+        self.hp -= damage
+
+    def attack(self, target):
+        damage = self.damage
+        target.take_damage(damage)
 class Player(Character):
     def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y):
         super().__init__(texture, hitbox, hp, damage, speed, diagonal_speed, x, y)
         self.shield = shield
+
+    def use_item(self, item):
+        if isinstance(item, HealthPotion):
+            self.hp += item.heal_amount
+        elif isinstance(item, SpeedBoost):
+            self.speed += item.duration
+        elif isinstance(item, StrengthBoost):
+            self.damage += item.duration
+
     def moving(self):
         
         keys = pygame.key.get_pressed()
@@ -104,23 +124,25 @@ class Player(Character):
             elif self.y > 223 or (self.x > 570 and self.x < 650):
                 self.y -= self.speed
 
+
 class Enemy(Character):
     def __init__(self, name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y):
         super().__init__(name, texture, hitbox, hp, damage, speed, diagonal_speed, x, y)
+
 
 class Warrior(Player):
     def __init__(self, name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y):
         super().__init__(name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y)
 
-    def attack(self):
-        pass
+
+
 
 class Archer(Player):
     def __init__(self, name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y):
         super().__init__(name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y)
     
-    def attack(self):
-        pass
+
+
 
 class Mob(Enemy):
     def __init__(self, name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y):
@@ -142,4 +164,40 @@ class Arrow:
     def __init__(self, speed, damage):
         self.speed = speed
         self.damage = damage
-  
+
+
+class Item:
+    def __init__(self, texture, x, y):
+        self.texture = texture
+        self.x = x
+        self.y = y
+
+    def use(self, character):
+        pass
+
+
+class HealthPotion(Item):
+    def __init__(self, x, y):
+        super().__init__("health_potion.png", x, y)
+        self.heal_amount = 50
+
+    def use(self, character):
+        character.heal(self.heal_amount)
+
+
+class SpeedBoost(Item):
+    def __init__(self, x, y):
+        super().__init__("speed_boost.png", x, y)
+        self.duration = 10
+
+    def use(self, character):
+        character.speed += 10
+
+
+class StrengthBoost(Item):
+    def __init__(self, x, y):
+        super().__init__("strength_boost.png", x, y)
+        self.duration = 10
+
+    def use(self, character):
+        character.strength += 10
