@@ -1,7 +1,7 @@
 import pygame
 from pyvidplayer import Video
 from class_files.game import Game
-from class_files.classes import Player, SpeedBoost, HealthPotion, DamageBoost, Item, Archer, Warrior
+from class_files.classes import Player, SpeedBoost, HealthPotion, DamageBoost, Item, Archer, Warrior, Arrow
 from const import door_up, door_down, door_left, door_right
 import random
 
@@ -23,9 +23,9 @@ class Interface():
         for i in range(player.hp):
             screen.blit(player.texture, (120 + i*80, 50))
         Interface.print_text(screen, "dmg", 30, 340, "Yellow", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 30)
-        # Interface.print_text(screen, "spd", 30, 300, "Yellow", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 30)
+        Interface.print_text(screen, "spd", 30, 300, "Yellow", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 30)
         Interface.print_text(screen, f"{player.damage}", 100, 340, "White", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 40)
-        # Interface.print_text(screen, f"{player.speed}", 100, 300, "White", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 40)  
+        Interface.print_text(screen, f"{player.speed}", 100, 300, "White", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 40)  
 
     def intro(screen, running):
         intro2 = Video("video/intro_max.mp4")
@@ -180,18 +180,19 @@ class Interface():
                     if map[x][y] == 5:
                         tx, ty = x, y
 
-            item1 = DamageBoost("img/items/1.png")
-            item1_photo = pygame.image.load(item1.texture)
+            item1 = SpeedBoost("img/items/1.png")
             item2 = HealthPotion("img/items/2.png")
-            item2_photo = pygame.image.load(item2.texture)
             item3 = DamageBoost("img/items/3.png")
-            item3_photo = pygame.image.load(item3.texture)
-            item4 = Item("img/items/4.png")
-            item4_photo = pygame.image.load(item4.texture)
-            item5 = SpeedBoost("img/items/5.png")
-            item5_photo = pygame.image.load(item5.texture)
+            item4 = DamageBoost("img/items/4.png")
+            item5 = HealthPotion("img/items/5.png")
+          
+            item1.texture = pygame.image.load(item1.texture)          
+            item2.texture = pygame.image.load(item2.texture)         
+            item3.texture = pygame.image.load(item3.texture)          
+            item4.texture = pygame.image.load(item4.texture)
+            item5.texture = pygame.image.load(item5.texture)
 
-            item_list = [item1_photo, item2_photo, item3_photo, item4_photo, item5_photo]
+            item_list = [item1, item2, item3, item4, item5]
             main_item = random.choice(item_list)
 
             return tx, ty, main_item
@@ -336,13 +337,13 @@ class Interface():
             
             if choose == 0:
                 vanechka_small = pygame.image.load("img/players/vanechka.png")
-                player = Warrior(vanechka_small, None, 2, 4, 0.9, 0.6, False, 540, 300)            
+                player = Warrior(vanechka_small, None, 2, 4, 1.5, 1.2, False, 540, 300, False)            
             elif choose == 1:
                 dimochka_small = pygame.image.load("img/players/dimochka.png")
-                player = Warrior(dimochka_small, None, 3, 3, 0.9, 0.6, False, 540, 300) 
+                player = Warrior(dimochka_small, None, 3, 3, 1.5, 1.2, False, 540, 300, False) 
             else:
                 shaman_small = pygame.image.load("img/players/shaman.png")
-                player = Archer(shaman_small, None, 4, 2, 0.9, 0.6, False, 540, 300)
+                player = Archer(shaman_small, None, 4, 2, 1.5, 1.2, False, 540, 300, False)
 
             
 
@@ -350,7 +351,9 @@ class Interface():
             room = pygame.image.load(Game.map.room_choose(map, room_x, room_y))
 
             gold_x, gold_y, item = Interface.room.init_treasure_room(map, screen)
-            item_hitbox = item.get_rect(topleft = (570, 400))
+            item_hitbox = item.texture.get_rect(topleft = (570, 400))
+
+            bullets = []
 
             while running:
                 player.hitbox = player.texture.get_rect(topleft = (player.x, player.y))
@@ -367,11 +370,28 @@ class Interface():
                 screen.blit(player.texture, (player.x, player.y))
                 Player.moving(player)
                 
-                # Interface.print_stat(screen, player)
+                Interface.print_stat(screen, player)
 
-                Item.create_item(gold_x, gold_y, map, item, screen, player)
-                Item.collision(item_hitbox, player, gold_x, gold_y, map)
+                Item.create_item(gold_x, gold_y, map, item.texture, screen, player)
+                Item.collision(item_hitbox, player, gold_x, gold_y, map, item)
                 
+                for bullet in bullets:
+                    if bullet.x > 230 and bullet.x < 1100 and bullet.y > 222 and bullet.y < 650:
+                        if bullet.facing == "a":
+                            bullet.x -= bullet.vel
+                        if bullet.facing == "d":
+                            bullet.x += bullet.vel
+                        if bullet.facing == "w":
+                            bullet.y -= bullet.vel
+                        if bullet.facing == "s":
+                            bullet.y += bullet.vel 
+                         
+                    else:
+                        bullets.pop(bullets.index(bullet))
+
+                for bullet in bullets:
+                    bullet.draw(screen)
+
                 
                 pygame.display.update()
 
@@ -391,6 +411,22 @@ class Interface():
                         
                         if event.key == pygame.K_ESCAPE:
                             Interface.menu.main_menu(screen, running)
+                        
+                        if event.key == pygame.K_LEFT:
+                            if len(bullets) < 5:
+                                bullets.append(Arrow(player.x + 35, player.y + 35, 10, "Red", "a"))
+
+                        if event.key == pygame.K_RIGHT:
+                            if len(bullets) < 5:
+                                bullets.append(Arrow(player.x + 35, player.y + 35, 10, "Red", "d"))
+                            
+                        if event.key == pygame.K_UP:
+                            if len(bullets) < 5:
+                                bullets.append(Arrow(player.x + 35, player.y + 35, 10, "Red", "w"))
+                                
+                        if event.key == pygame.K_DOWN:
+                            if len(bullets) < 5:
+                                bullets.append(Arrow(player.x + 35, player.y + 35, 10, "Red", "s"))
                             
 
 
