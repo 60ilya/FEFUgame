@@ -428,6 +428,7 @@ class Interface():
                         if event.key == pygame.K_r:
                             Interface.game.main_game(screen, choose)
 
+
                         # if event.key == pygame.K_b: #временное включение босса
                         #     Interface.game.boss_fight(screen, player)
                         
