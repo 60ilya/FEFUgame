@@ -1,7 +1,7 @@
 import pygame
 
 class Character():
-    def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, x, y):
+    def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, x, y, item):
         self.texture = texture
         self.hitbox = hitbox
         self.hp = hp
@@ -10,22 +10,13 @@ class Character():
         self.diagonal_speed = diagonal_speed
         self.x = x
         self.y = y
-        self.alive = True
-
-    def die(self):
-        self.alive = False
-        del self
-
-    def take_damage(self, damage):
-        self.hp -= damage
-
-    def attack(self, target):
-        damage = self.damage
-        target.take_damage(damage)
+        self.item = item
+        
 class Player(Character):
-    def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y):
-        super().__init__(texture, hitbox, hp, damage, speed, diagonal_speed, x, y)
+    def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y, item):
+        super().__init__(texture, hitbox, hp, damage, speed, diagonal_speed, x, y, item)
         self.shield = shield
+        
 
     def use_item(self, item):
         if isinstance(item, HealthPotion):
@@ -131,15 +122,15 @@ class Enemy(Character):
 
 
 class Warrior(Player):
-    def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y):
-        super().__init__(texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y)
+    def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y, item):
+        super().__init__(texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y, item)
 
 
 
 
 class Archer(Player):
-    def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y):
-        super().__init__(texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y)
+    def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y, item):
+        super().__init__(texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y, item)
     
 
 
@@ -157,13 +148,19 @@ class Boss(Enemy):
 
 
 class Arrow:
-    def __init__(self, speed, damage):
-        self.speed = speed
-        self.damage = damage
+    def __init__(self, x, y, radius, color, facing):
+        self.x = x
+        self.y = y
+        self.radius = radius
+        self.color = color
+        self.facing = facing
+        self.vel = 3
 
+    def draw(self, screen):
+        pygame.draw.circle(screen, "Red", (self.x, self.y), self.radius)
 
 class Item:
-    def __init__(self, texture, hitbox = None):
+    def __init__(self, texture):
         self.texture = texture
         
     def create_item(gold_x, gold_y, map, item, screen, player):
@@ -171,9 +168,10 @@ class Item:
             if map[gold_x][gold_y] == 2:
                 screen.blit(item, (570, 400))
 
-    def collision(item_hitbox, player, gold_x, gold_y, map):
+    def collision(item_hitbox, player, gold_x, gold_y, map, item):
         if player.hitbox.colliderect(item_hitbox):
             if map[gold_x][gold_y] == 2:
+                item.use(player)
                 player.shield = True
                 gold_x, gold_y = 9, 9
 
@@ -190,8 +188,10 @@ class HealthPotion(Item):
         if map[gold_x][gold_y] == 2:
             screen.blit(item, (570, 400))
 
-    def use(self, character):
-        character.heal(self.heal_amount)
+    def use(self, player):
+        if player.item == False:
+            player.item = True
+            player.hp += 1
 
 
 class SpeedBoost(Item):
@@ -203,9 +203,10 @@ class SpeedBoost(Item):
         if map[gold_x][gold_y] == 2:
             screen.blit(item, (570, 400))
 
-
-    def use(self, character):
-        character.speed += 0.5
+    def use(self, player):
+        if player.item == False:
+            player.item = True
+            player.speed += 0.5
 
 
 class DamageBoost(Item):
@@ -217,5 +218,7 @@ class DamageBoost(Item):
         if map[gold_x][gold_y] == 2:
             screen.blit(item, (570, 400))
 
-    def use(self, character):
-        character.strength += 2
+    def use(self, player):
+        if player.item == False:
+            player.item = True  
+            player.damage += 2
