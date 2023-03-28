@@ -52,7 +52,7 @@ class Interface():
                         if event.key == pygame.K_SPACE:
                             intro2.close()
                             Interface.menu.main_menu(screen, running)
-
+    #миникарта
     class minimap():
         def room_minimap(map, room):
 
@@ -198,7 +198,7 @@ class Interface():
             return tx, ty, main_item
         
         
-
+    #главная заставка + выбор персонажа
     class menu():
         def player_choose(screen, running):
 
@@ -328,13 +328,13 @@ class Interface():
                             
 
                 
-
+   
     class game():
         def main_game(screen, choose):
             room_x = 4
             room_y = 4
             running = True
-            
+            #создание персонажа
             if choose == 0:
                 vanechka_small = pygame.image.load("img/players/vanechka.png")
                 player = Warrior(vanechka_small, None, 2, 4, 1.5, 1.2, False, 540, 300, False)            
@@ -347,11 +347,11 @@ class Interface():
 
             
 
-            map = Game.map.rand_map()
-            room = pygame.image.load(Game.map.room_choose(map, room_x, room_y))
+            map = Game.map.rand_map()#создание миникарты
+            room = pygame.image.load(Game.map.room_choose(map, room_x, room_y))#создание комнат
 
-            gold_x, gold_y, item = Interface.room.init_treasure_room(map, screen)
-            item_hitbox = item.texture.get_rect(topleft = (570, 400))
+            gold_x, gold_y, item = Interface.room.init_treasure_room(map, screen)#корды предметов
+            item_hitbox = item.texture.get_rect(topleft = (570, 400))#текстуры предметов
 
             bullets = []
 
