@@ -27,6 +27,13 @@ class Player(Character):
         elif isinstance(item, DamageBoost):
             self.damage += item.duration
 
+    def room_coordinates(self, map):
+        for y in range(10):
+            for x in range(10):
+                if map[x][y] == 2:
+                    xy = [x, y]
+                    return xy
+
     def moving(self):
         
         keys = pygame.key.get_pressed()
@@ -134,7 +141,8 @@ class Archer(Player):
     def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y, item):
         super().__init__(texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y, item)
 
-    def shooting(self, bullets, screen):
+
+    def shooting(self, bullets, screen, egg):
         for bullet in bullets:
             if bullet.x > 230 and bullet.x < 1100 and bullet.y > 222 and bullet.y < 650:
                 if bullet.facing == "a":
@@ -150,55 +158,37 @@ class Archer(Player):
                 bullets.pop(bullets.index(bullet))
 
         for bullet in bullets:
-            bullet.draw(screen)
+            bullet.draw(screen, egg)
+            
     
 
 
 
 class Mob():
-    def __init__(self, hp, damage, texture, speed, x, y):
+    def __init__(self, hp, damage, texture, speed, x, y, hitbox):
         self.hp = hp
         self.damage = damage
         self.texture = texture
         self.speed = speed
         self.x = x
         self.y = y
+        self.hitbox = hitbox
 
-    def collision(self):
+    def collision(self, bullets, mobs_list, mob1, mob2, mob3, mob4):
         pass
 
-    def spawn(map, screen, rooms, cats):
-        for x, y in rooms:
-            if map[x][y] == 2:
-                print(x, y)
-                rand = random.randint(0, 4)
-                if rand == 1:
-                    mob1 = Mob(50, 1, cats, 2, 570, 470)
-                    screen.blit(mob1.texture, (mob1.x, mob1.y))
-                    # return mob1
-                if rand == 2:
-                    mob1 = Mob(50, 1, cats, 2, 500, 400)
-                    mob2 = Mob(50, 1, cats, 2, 640, 400)
-                    screen.blit(mob1.texture, (mob1.x, mob1.y))
-                    screen.blit(mob2.texture, (mob2.x, mob2.y))
-                    # return mob1, mob2
-                if rand == 3:
-                    mob1 = Mob(50, 1, cats, 2, 570, 470)
-                    mob2 = Mob(50, 1, cats, 2, 500, 400)
-                    mob3 = Mob(50, 1, cats, 2, 640, 400)
-                    screen.blit(mob1.texture, (mob1.x, mob1.y))
-                    screen.blit(mob2.texture, (mob2.x, mob2.y))
-                    screen.blit(mob3.texture, (mob3.x, mob3.y))
-                    # return mob1, mob2, mob3
-                if rand == 4:
-                    mob1 = Mob(50, 1, cats, 2, 570, 470)
-                    mob2 = Mob(50, 1, cats, 2, 500, 400)
-                    mob3 = Mob(50, 1, cats, 2, 640, 400)
-                    mob4 = Mob(50, 1, cats, 2, 570, 540)
-                    screen.blit(mob1.texture, (mob1.x, mob1.y))
-                    screen.blit(mob2.texture, (mob2.x, mob2.y))
-                    screen.blit(mob3.texture, (mob3.x, mob3.y))
-                    screen.blit(mob4.texture, (mob4.x, mob4.y))
+    def spawn(map, screen, xy, mobs_room, mob1, mob2, mob3, mob4, mobs_list):
+        if xy in mobs_room:
+            if mob1 in mobs_list:
+                screen.blit(mob1.texture, (mob1.x, mob1.y))
+            if mob2 in mobs_list:
+                screen.blit(mob2.texture, (mob2.x, mob2.y))
+            if mob3 in mobs_list:
+                screen.blit(mob3.texture, (mob3.x, mob3.y))
+            if mob4 in mobs_list:
+                screen.blit(mob4.texture, (mob4.x, mob4.y))
+            if len(mobs_room) == 0:
+                mobs_room.remove(xy)
                     # return mob1, mob2, mob3, mob4
 
 class Boss(Enemy):
@@ -207,16 +197,14 @@ class Boss(Enemy):
 
 
 class Arrow:
-    def __init__(self, x, y, radius, color, facing):
+    def __init__(self, x, y, facing):
         self.x = x
         self.y = y
-        self.radius = radius
-        self.color = color
         self.facing = facing
         self.vel = 3
 
-    def draw(self, screen):
-        pygame.draw.circle(screen, "Red", (self.x, self.y), self.radius)
+    def draw(self, screen, egg):
+        screen.blit(egg, (self.x, self.y))
 
 
 class Item:

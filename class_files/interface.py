@@ -205,8 +205,7 @@ class Interface():
             for y in range(10):
                 for x in range(10):
                     if map[x][y] == 1:
-                        room_with_mobs.append(x)
-                        room_with_mobs.append(y)
+                        room_with_mobs.append([x, y])
             print(room_with_mobs)
             
             return room_with_mobs
@@ -365,16 +364,27 @@ class Interface():
             map = Game.map.rand_map()
             room = pygame.image.load(Game.map.room_choose(map, room_x, room_y))
             cats = pygame.image.load("img/enemy/mobs/cats.png")
+            egg = pygame.image.load("img/shoot/egg.png")
+
+            mob1 = Mob(50, 1, cats, 2, 580, 470, None)
+            mob2 = Mob(50, 1, cats, 2, 510, 400, None)
+            mob3 = Mob(50, 1, cats, 2, 650, 400, None)
+            mob4 = Mob(50, 1, cats, 2, 580, 330, None)
+
+            mobs_list = [mob1, mob2, mob3, mob4]
+
+            
 
             gold_x, gold_y, item = Interface.room.init_treasure_room(map, screen)
             item_hitbox = item.texture.get_rect(topleft = (570, 400))
 
             mobs_room = Interface.room.get_mobs_rooms(map, screen)
+            
 
             bullets = []
 
             while running:
-                Mob.spawn(map, screen, mobs_room, cats)
+                xy = player.room_coordinates(map)
 
                 player.hitbox = player.texture.get_rect(topleft = (player.x, player.y))
 
@@ -392,10 +402,13 @@ class Interface():
                 
                 Interface.print_stat(screen, player)
 
+                Mob.spawn(map, screen, xy, mobs_room, mob1, mob2, mob3, mob4, mobs_list)
+
+
                 Item.create_item(gold_x, gold_y, map, item.texture, screen, player)
                 Item.collision(item_hitbox, player, gold_x, gold_y, map, item)
                 
-                player.shooting(bullets, screen)
+                player.shooting(bullets, screen, egg)
 
                 
                 pygame.display.update()
@@ -419,19 +432,19 @@ class Interface():
                         
                         if event.key == pygame.K_LEFT:
                             if len(bullets) < 5:
-                                bullets.append(Arrow(player.x + 35, player.y + 35, 10, "Red", "a"))
+                                bullets.append(Arrow(player.x + 35, player.y + 35, "a"))
 
                         if event.key == pygame.K_RIGHT:
                             if len(bullets) < 5:
-                                bullets.append(Arrow(player.x + 35, player.y + 35, 10, "Red", "d"))
+                                bullets.append(Arrow(player.x + 35, player.y + 35, "d"))
                             
                         if event.key == pygame.K_UP:
                             if len(bullets) < 5:
-                                bullets.append(Arrow(player.x + 35, player.y + 35, 10, "Red", "w"))
+                                bullets.append(Arrow(player.x + 35, player.y + 35, "w"))
                                 
                         if event.key == pygame.K_DOWN:
                             if len(bullets) < 5:
-                                bullets.append(Arrow(player.x + 35, player.y + 35, 10, "Red", "s"))
+                                bullets.append(Arrow(player.x + 35, player.y + 35, "s"))
                             
 
 
