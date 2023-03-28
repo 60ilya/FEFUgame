@@ -73,11 +73,11 @@ square.fill("White")
 
 mainsound=pygame.mixer.Sound("music/battle_music.mp3")
 
-main_string1=pygame.font.Font("SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf",40)
+main_string1=pygame.font.Font("fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf",40)
 string2=main_string1.render("Вы готовы к бою?",False,"White")
 string3=main_string1.render("Нажмите ENTER, чтобы начать ",False,"White")
 string4=main_string1.render("Нажмите SPACE ,чтобы сбежать ",False,"White", "Black")
-main_string2=pygame.font.Font("SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf",80)
+main_string2=pygame.font.Font("fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf",80)
 string5=main_string2.render("Winner",False,"Gold")
 
 newfight1=True

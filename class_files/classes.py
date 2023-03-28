@@ -151,9 +151,14 @@ class Mob(Enemy):
     def collision(self):
         pass
 
-class Boss(Enemy):
-    def __init__(self, name, hp, damage, texture, x, y):
-        super().__init__(name, hp, damage, texture, x, y)
+class Boss:
+    def __init__(self, texture, hp, damage, x, y):
+        self.texture = texture
+        self.hp = hp
+        self.damage = damage
+        self.x = x
+        self.y = y
+        self.alive = True
 
 
 class Arrow:
