@@ -1,6 +1,7 @@
 import pygame
+import random
 
-class Character():
+class Character:
     def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, x, y, item):
         self.texture = texture
         self.hitbox = hitbox
@@ -116,9 +117,10 @@ class Player(Character):
                 self.y -= self.speed
 
 
+
 class Enemy(Character):
-    def __init__(self, name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y):
-        super().__init__(name, texture, hitbox, hp, damage, speed, diagonal_speed, x, y)
+    def __init__(self, hp, damage, texture, speed, x, y):
+        super().__init__(hp, damage, texture, speed, x, y)
 
 
 class Warrior(Player):
@@ -131,16 +133,73 @@ class Warrior(Player):
 class Archer(Player):
     def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y, item):
         super().__init__(texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y, item)
+
+    def shooting(self, bullets, screen):
+        for bullet in bullets:
+            if bullet.x > 230 and bullet.x < 1100 and bullet.y > 222 and bullet.y < 650:
+                if bullet.facing == "a":
+                    bullet.x -= bullet.vel
+                if bullet.facing == "d":
+                    bullet.x += bullet.vel
+                if bullet.facing == "w":
+                    bullet.y -= bullet.vel
+                if bullet.facing == "s":
+                    bullet.y += bullet.vel 
+                    
+            else:
+                bullets.pop(bullets.index(bullet))
+
+        for bullet in bullets:
+            bullet.draw(screen)
     
 
 
 
-class Mob(Enemy):
-    def __init__(self, name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y):
-        super().__init__(name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y)
+class Mob():
+    def __init__(self, hp, damage, texture, speed, x, y):
+        self.hp = hp
+        self.damage = damage
+        self.texture = texture
+        self.speed = speed
+        self.x = x
+        self.y = y
 
     def collision(self):
         pass
+
+    def spawn(map, screen, rooms, cats):
+        for x, y in rooms:
+            if map[x][y] == 2:
+                print(x, y)
+                rand = random.randint(0, 4)
+                if rand == 1:
+                    mob1 = Mob(50, 1, cats, 2, 570, 470)
+                    screen.blit(mob1.texture, (mob1.x, mob1.y))
+                    # return mob1
+                if rand == 2:
+                    mob1 = Mob(50, 1, cats, 2, 500, 400)
+                    mob2 = Mob(50, 1, cats, 2, 640, 400)
+                    screen.blit(mob1.texture, (mob1.x, mob1.y))
+                    screen.blit(mob2.texture, (mob2.x, mob2.y))
+                    # return mob1, mob2
+                if rand == 3:
+                    mob1 = Mob(50, 1, cats, 2, 570, 470)
+                    mob2 = Mob(50, 1, cats, 2, 500, 400)
+                    mob3 = Mob(50, 1, cats, 2, 640, 400)
+                    screen.blit(mob1.texture, (mob1.x, mob1.y))
+                    screen.blit(mob2.texture, (mob2.x, mob2.y))
+                    screen.blit(mob3.texture, (mob3.x, mob3.y))
+                    # return mob1, mob2, mob3
+                if rand == 4:
+                    mob1 = Mob(50, 1, cats, 2, 570, 470)
+                    mob2 = Mob(50, 1, cats, 2, 500, 400)
+                    mob3 = Mob(50, 1, cats, 2, 640, 400)
+                    mob4 = Mob(50, 1, cats, 2, 570, 540)
+                    screen.blit(mob1.texture, (mob1.x, mob1.y))
+                    screen.blit(mob2.texture, (mob2.x, mob2.y))
+                    screen.blit(mob3.texture, (mob3.x, mob3.y))
+                    screen.blit(mob4.texture, (mob4.x, mob4.y))
+                    # return mob1, mob2, mob3, mob4
 
 class Boss(Enemy):
     def __init__(self, name, hp, damage, texture, x, y):
@@ -158,6 +217,7 @@ class Arrow:
 
     def draw(self, screen):
         pygame.draw.circle(screen, "Red", (self.x, self.y), self.radius)
+
 
 class Item:
     def __init__(self, texture):

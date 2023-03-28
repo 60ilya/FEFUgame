@@ -1,7 +1,7 @@
 import pygame
 from pyvidplayer import Video
 from class_files.game import Game
-from class_files.classes import Player, SpeedBoost, HealthPotion, DamageBoost, Item, Archer, Warrior, Arrow
+from class_files.classes import Player, SpeedBoost, HealthPotion, DamageBoost, Item, Archer, Arrow, Mob
 from const import door_up, door_down, door_left, door_right
 import random
 
@@ -114,9 +114,9 @@ class Interface():
         URL = "img/rooms/url.jpeg"
         URDL = "img/rooms/urdl.jpeg"
 
-        def room_changing(player, map, room_x, room_y, room): 
-
+        def room_changing(player, map, room_x, room_y, room, bullets: list): 
             if player.x < 226 and map[room_x][room_y - 1] != 0:
+                bullets.clear()
                 if map[room_x][room_y] not in range(4, 6):
                     map[room_x][room_y] = 3
                 map[room_x][room_y - 1] = 2
@@ -130,6 +130,7 @@ class Interface():
                     print(map[i])
 
             if player.x > 1000 and map[room_x][room_y + 1] != 0:
+                bullets.clear()
                 if map[room_x][room_y] not in range(4, 6):
                     map[room_x][room_y] = 3
 
@@ -144,6 +145,7 @@ class Interface():
                     print(map[i])
 
             if player.y < 195 and map[room_x - 1][room_y] != 0:
+                bullets.clear()
                 if map[room_x][room_y] not in range(4, 6):
                     map[room_x][room_y] = 3
                 map[room_x - 1][room_y] = 2
@@ -157,6 +159,7 @@ class Interface():
                     print(map[i])
 
             if player.y > 640 and map[room_x + 1][room_y] != 0:
+                bullets.clear()
                 if map[room_x][room_y] not in range(4, 6):
                     map[room_x][room_y] = 3
                 map[room_x + 1][room_y] = 2
@@ -196,6 +199,18 @@ class Interface():
             main_item = random.choice(item_list)
 
             return tx, ty, main_item
+        
+        def get_mobs_rooms(map, screen):
+            room_with_mobs = []
+            for y in range(10):
+                for x in range(10):
+                    if map[x][y] == 1:
+                        room_with_mobs.append(x)
+                        room_with_mobs.append(y)
+            print(room_with_mobs)
+            
+            return room_with_mobs
+
         
         
 
@@ -337,10 +352,10 @@ class Interface():
             
             if choose == 0:
                 vanechka_small = pygame.image.load("img/players/vanechka.png")
-                player = Warrior(vanechka_small, None, 2, 4, 1.5, 1.2, False, 540, 300, False)            
+                player = Archer(vanechka_small, None, 2, 4, 1.5, 1.2, False, 540, 300, False)            
             elif choose == 1:
                 dimochka_small = pygame.image.load("img/players/dimochka.png")
-                player = Warrior(dimochka_small, None, 3, 3, 1.5, 1.2, False, 540, 300, False) 
+                player = Archer(dimochka_small, None, 3, 3, 1.5, 1.2, False, 540, 300, False) 
             else:
                 shaman_small = pygame.image.load("img/players/shaman.png")
                 player = Archer(shaman_small, None, 4, 2, 1.5, 1.2, False, 540, 300, False)
@@ -349,13 +364,18 @@ class Interface():
 
             map = Game.map.rand_map()
             room = pygame.image.load(Game.map.room_choose(map, room_x, room_y))
+            cats = pygame.image.load("img/enemy/mobs/cats.png")
 
             gold_x, gold_y, item = Interface.room.init_treasure_room(map, screen)
             item_hitbox = item.texture.get_rect(topleft = (570, 400))
 
+            mobs_room = Interface.room.get_mobs_rooms(map, screen)
+
             bullets = []
 
             while running:
+                Mob.spawn(map, screen, mobs_room, cats)
+
                 player.hitbox = player.texture.get_rect(topleft = (player.x, player.y))
 
                 Game.map.room_inv_block(map, room_x, room_y, player)
@@ -363,34 +383,19 @@ class Interface():
                 Interface.minimap.room_minimap(map, room)
                 Interface.minimap.player_minimap(map, room)
 
-                room, room_x, room_y = Interface.room.room_changing(player, map, room_x, room_y, room)
+                room, room_x, room_y = Interface.room.room_changing(player, map, room_x, room_y, room, bullets)
 
                 screen.blit(room, (0, 0))
 
                 screen.blit(player.texture, (player.x, player.y))
-                Player.moving(player)
+                player.moving()
                 
                 Interface.print_stat(screen, player)
 
                 Item.create_item(gold_x, gold_y, map, item.texture, screen, player)
                 Item.collision(item_hitbox, player, gold_x, gold_y, map, item)
                 
-                for bullet in bullets:
-                    if bullet.x > 230 and bullet.x < 1100 and bullet.y > 222 and bullet.y < 650:
-                        if bullet.facing == "a":
-                            bullet.x -= bullet.vel
-                        if bullet.facing == "d":
-                            bullet.x += bullet.vel
-                        if bullet.facing == "w":
-                            bullet.y -= bullet.vel
-                        if bullet.facing == "s":
-                            bullet.y += bullet.vel 
-                         
-                    else:
-                        bullets.pop(bullets.index(bullet))
-
-                for bullet in bullets:
-                    bullet.draw(screen)
+                player.shooting(bullets, screen)
 
                 
                 pygame.display.update()
