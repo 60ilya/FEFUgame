@@ -179,6 +179,19 @@ class Mob():
 
     def collision(self, bullets, mobs_list, mob1, mob2, mob3, mob4):
         pass
+
+    def spawn(map, screen, xy, mobs_room, mob1, mob2, mob3, mob4, mobs_list):
+        if xy in mobs_room:
+            if mob1 in mobs_list:
+                screen.blit(mob1.texture, (mob1.x, mob1.y))
+            if mob2 in mobs_list:
+                screen.blit(mob2.texture, (mob2.x, mob2.y))
+            if mob3 in mobs_list:
+                screen.blit(mob3.texture, (mob3.x, mob3.y))
+            if mob4 in mobs_list:
+                screen.blit(mob4.texture, (mob4.x, mob4.y))
+            if len(mobs_room) == 0:
+                mobs_room.remove(xy)
 #класс босса
 class Boss:
     def __init__(self, texture, hp, damage, x, y):
