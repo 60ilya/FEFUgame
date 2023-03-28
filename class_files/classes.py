@@ -1,4 +1,6 @@
 import pygame
+import random
+
 #основной класс
 class Character():
     def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, x, y, item):
@@ -25,6 +27,14 @@ class Player(Character):
             self.speed += item.duration
         elif isinstance(item, DamageBoost):
             self.damage += item.duration
+
+    def room_coordinates(self, map):
+        for y in range(10):
+            for x in range(10):
+                if map[x][y] == 2:
+                    xy = [x, y]
+                    return xy
+
     #функция для передвижения персонажа
     def moving(self):
         
@@ -115,10 +125,12 @@ class Player(Character):
             elif self.y > 223 or (self.x > 570 and self.x < 650):
                 self.y -= self.speed
 
+
+
 #класс врагов
 class Enemy(Character):
-    def __init__(self, name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y):
-        super().__init__(name, texture, hitbox, hp, damage, speed, diagonal_speed, x, y)
+    def __init__(self, hp, damage, texture, speed, x, y):
+        super().__init__(hp, damage, texture, speed, x, y)
 
 #класс воина
 class Warrior(Player):
@@ -131,16 +143,55 @@ class Warrior(Player):
 class Archer(Player):
     def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y, item):
         super().__init__(texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y, item)
+
+
+    def shooting(self, bullets, screen, egg):
+        for bullet in bullets:
+            if bullet.x > 230 and bullet.x < 1100 and bullet.y > 222 and bullet.y < 650:
+                if bullet.facing == "a":
+                    bullet.x -= bullet.vel
+                if bullet.facing == "d":
+                    bullet.x += bullet.vel
+                if bullet.facing == "w":
+                    bullet.y -= bullet.vel
+                if bullet.facing == "s":
+                    bullet.y += bullet.vel 
+                    
+            else:
+                bullets.pop(bullets.index(bullet))
+
+        for bullet in bullets:
+            bullet.draw(screen, egg)
+            
     
 
 
-#класс моба
-class Mob(Enemy):
-    def __init__(self, name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y):
-        super().__init__(name, hp, damage, texture, hitbox, speed, diagonal_speed, x, y)
 
-    def collision(self):
+class Mob():
+    def __init__(self, hp, damage, texture, speed, x, y, hitbox):
+        self.hp = hp
+        self.damage = damage
+        self.texture = texture
+        self.speed = speed
+        self.x = x
+        self.y = y
+        self.hitbox = hitbox
+
+    def collision(self, bullets, mobs_list, mob1, mob2, mob3, mob4):
         pass
+
+    def spawn(map, screen, xy, mobs_room, mob1, mob2, mob3, mob4, mobs_list):
+        if xy in mobs_room:
+            if mob1 in mobs_list:
+                screen.blit(mob1.texture, (mob1.x, mob1.y))
+            if mob2 in mobs_list:
+                screen.blit(mob2.texture, (mob2.x, mob2.y))
+            if mob3 in mobs_list:
+                screen.blit(mob3.texture, (mob3.x, mob3.y))
+            if mob4 in mobs_list:
+                screen.blit(mob4.texture, (mob4.x, mob4.y))
+            if len(mobs_room) == 0:
+                mobs_room.remove(xy)
 #класс босса
 class Boss:
     def __init__(self, texture, hp, damage, x, y):
@@ -151,19 +202,37 @@ class Boss:
         self.y = y
         self.alive = True    
 
+    def spawn(map, screen, xy, mobs_room, mob1, mob2, mob3, mob4, mobs_list):
+        if xy in mobs_room:
+            if mob1 in mobs_list:
+                screen.blit(mob1.texture, (mob1.x, mob1.y))
+            if mob2 in mobs_list:
+                screen.blit(mob2.texture, (mob2.x, mob2.y))
+            if mob3 in mobs_list:
+                screen.blit(mob3.texture, (mob3.x, mob3.y))
+            if mob4 in mobs_list:
+                screen.blit(mob4.texture, (mob4.x, mob4.y))
+            if len(mobs_room) == 0:
+                mobs_room.remove(xy)
+                    # return mob1, mob2, mob3, mob4
+
+class Boss(Enemy):
+    def __init__(self, name, hp, damage, texture, x, y):
+        super().__init__(name, hp, damage, texture, x, y)
+
+
 #класс стрелы
 class Arrow:
-    def __init__(self, x, y, radius, color, facing):
+    def __init__(self, x, y, facing):
         self.x = x
         self.y = y
-        self.radius = radius
-        self.color = color
         self.facing = facing
         self.vel = 3
-    #функция рисования
-    def draw(self, screen):
-        pygame.draw.circle(screen, "Red", (self.x, self.y), self.radius)
-#класс предметов
+
+    def draw(self, screen, egg):
+        screen.blit(egg, (self.x, self.y))
+
+
 class Item:
     def __init__(self, texture):
         self.texture = texture

@@ -185,7 +185,6 @@ class Game():
                             max_ans = ans
                             max_x = x
                             max_y = y
-            print(max_ans)
 
             Game.array_check(map, max_x, max_y, 4)
             
@@ -203,7 +202,6 @@ class Game():
                             max_ans = ans
                             max_x = x
                             max_y = y
-            print(max_ans)
             Game.array_check(map, max_x, max_y, 5)
             
 
@@ -215,6 +213,7 @@ class Game():
                      5 - предмет""")
             for i in range(10):
                 print(map[i])
+            print()
 
             return map
         #выбор комнаты

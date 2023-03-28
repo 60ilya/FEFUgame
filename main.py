@@ -2,7 +2,7 @@ import pygame
 import class_files.classes as classes
 from class_files.interface import Interface
 from class_files.game import Game
-from const import room_x, room_y, WIDTH, HEIGHT, running
+from const import WIDTH, HEIGHT, running
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT)) # flags = pygame.NOFRAME
