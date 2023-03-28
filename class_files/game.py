@@ -3,7 +3,7 @@ import random
 import math
 
 class Game():
-
+    #проверка массива для миникарты
     def array_check(map, x, y, n):
         if map[x][y] == 1:
             if y + 1 != 9 and map[x][y + 1] == 0:
@@ -18,7 +18,7 @@ class Game():
             elif x - 1 != -1 and map[x - 1][y] == 0:
                 if map[x - 2][y] == 0 and map[x - 1][y + 1] == 0 and map[x - 1][y - 1] == 0:
                     map[x - 1][y] = n
-    class map():
+    class map():#согдание невидимого блока
         def room_inv_block(map, x, y, player):
             if map[x - 1][y] == 0:
                 if player.y < 222:
@@ -32,7 +32,7 @@ class Game():
             if map[x][y + 1] == 0:
                 if player.x > 972:
                     player.x = 971
-
+        #согдание карндомной карты
         def rand_map():
             count = 0
             flag = False
@@ -217,7 +217,7 @@ class Game():
                 print(map[i])
 
             return map
-
+        #выбор комнаты
         def room_choose(map, i, j):
 
             if map[i + 1][j] == 0 and map[i - 1][j] == 0 and map[i][j + 1] == 0 and map[i][j - 1] != 0:
