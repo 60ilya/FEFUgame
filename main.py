@@ -2,7 +2,7 @@ import pygame
 import class_files.classes as classes
 from class_files.interface import Interface
 from class_files.game import Game
-from const import room_x, room_y, WIDTH, HEIGHT, running
+from const import WIDTH, HEIGHT, running
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT)) # flags = pygame.NOFRAME
@@ -11,8 +11,6 @@ icon = pygame.image.load("img/icons/icon.png")
 pygame.display.set_icon(icon)
 
 
-Interface.menu.main_menu(screen, running)
-# Interface.game.main_game(screen)
-# Interface.boss_battle(screen)
+Interface.intro(screen, running)
         
             
