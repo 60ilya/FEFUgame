@@ -269,7 +269,7 @@ class Interface():
 
                         if event.key == pygame.K_SPACE:
                             print(choose)
-                            Interface.game.main_game(screen, choose)
+                            Interface.game.main_game(screen, choose, running)
 
                         if event.key == pygame.K_ESCAPE:
                             Interface.menu.main_menu(screen, running)
@@ -330,7 +330,7 @@ class Interface():
                 
 
     class game():
-        def main_game(screen, choose):
+        def main_game(screen, choose, running):
             room_x = 4
             room_y = 4
             running = True
@@ -354,6 +354,8 @@ class Interface():
             item_hitbox = item.texture.get_rect(topleft = (570, 400))
 
             bullets = []
+            
+
 
             while running:
                 player.hitbox = player.texture.get_rect(topleft = (player.x, player.y))
@@ -408,10 +410,10 @@ class Interface():
                                 pygame.mixer.music.unpause()
 
                         if event.key == pygame.K_r:
-                            Interface.game.main_game(screen, choose)
+                            Interface.game.main_game(screen, choose, running)
 
                         if event.key == pygame.K_b: #временное включение босса
-                            Interface.game.boss_fight(screen, player)
+                            Interface.game.boss_fight(screen, player, running)
                         
                         if event.key == pygame.K_ESCAPE:
                             Interface.menu.main_menu(screen, running)
@@ -431,21 +433,31 @@ class Interface():
                         if event.key == pygame.K_DOWN:
                             if len(bullets) < 5:
                                 bullets.append(Arrow(player.x + 35, player.y + 35, 10, "Red", "s"))
-        def boss_fight(screen, player):
+
+        def boss_fight(screen, player, running):
             
-            boss = Boss(pygame.image.load("img/boss/klunin5.png"), 250, 1, 500, 100)
+            boss = Boss(pygame.image.load("img/boss/klunin5.png"), 5, 1, 500, 100)
+
+            # if player_rect.colliderect(klenin_rect):
+            #         location=False
+            #         screen.blit(men,(0,0))
+            #         screen.blit(string2,(150, 360))
+            #         screen.blit(string3,(150, 410))
+            #         screen.blit(string4,(150, 460))
+            #         pygame.time.delay(70)
 
             def print_boss(hp):
-                if hp==200:
+                if hp==4:
                     screen.blit(bigboss1,(0,100))
-                elif hp==150:
+                elif hp==3:
                     screen.blit(bigboss2,(0,100))
-                elif hp==100:
+                elif hp==2:
                     screen.blit(bigboss3,(0,100))
-                elif hp==50:
+                elif hp==1:
                     screen.blit(bigboss4,(0,100))
                 else:
                     screen.blit(bigboss,(0,100))
+                print(hp)
 
             pygame.init()
             screen=pygame.display.set_mode((1280, 768))
@@ -506,7 +518,8 @@ class Interface():
             fightend=True
 
             good=True
-            bad=True
+            bad=False
+            loose=False
             victory=True
             location=True
             fight1=True
@@ -519,46 +532,34 @@ class Interface():
             after_fight6=2
             after_fight7=2
             after_fight8=2
+            
+            test=False
+            answ=True
 
             while True:
                 mainsound.play()
                 screen.blit(bg,(0,0))
                 screen.blit(boss.texture,(boss.x, boss.y))
                 screen.blit(player.texture ,(player.x, player.y))
-                
-                # if victory==True:
-                    
-                #     keys=pygame.key.get_pressed()
-                #     if keys[pygame.K_a]:
-                #         xxx-=speed
-                #     elif keys[pygame.K_d]:
-                #         xxx+=speed
-                #     elif keys[pygame.K_w]:
-                #         yyy-=speed
-                #     elif keys[pygame.K_s]:
-                #         yyy+=speed
                         
-                # player_rect = player.get_rect(topleft=(xxx, yyy))
-                # klenin_rect = boss.get_rect(topleft=( klenin_locationx, klenin_locationy))
-                # if player_rect.colliderect(klenin_rect):
-                #     victory=False
-                #     location=False
-                #     screen.blit(men,(0,0))
-                #     screen.blit(string2,(150, 360))
-                #     screen.blit(string3,(150, 410))
-                #     screen.blit(string4,(150, 460))
-                #     pygame.time.delay(70)
-                victory=False
+
+
+
                 location=False 
                 screen.blit(men,(0,0))
                 screen.blit(string2,(150, 360))
                 screen.blit(string3,(150, 410))
                 screen.blit(string4,(150, 460))
                 pygame.time.delay(70)
-        
 
-                if bad == False:
-                    screen.blit(badend,(0,0))
+                if test:
+                    screen.blit(men,(0,0))
+                    screen.blit(dvfu,(1125,20))
+                    screen.blit(bigboss,(0,100))
+                    if answ:
+                        screen.blit(goodtest,(600,200))
+                    else:
+                        screen.blit(badtest,(600,200))
 
                 if good == False:
                     fight1=False
@@ -587,8 +588,7 @@ class Interface():
                     screen.blit(dvfu,(1125,20))
                     screen.blit(square,(670,525))
                     screen.blit(goodtest,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
                     
                 if fight2==False:
@@ -596,8 +596,7 @@ class Interface():
                     print_boss(boss.hp)
                     screen.blit(dvfu,(1125,20))
                     screen.blit(test2,(570,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
 
                 if after_fight2==False:
@@ -606,8 +605,7 @@ class Interface():
                     print_boss(boss.hp)
                     screen.blit(dvfu,(1125,20))
                     screen.blit(badtest,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
                     if player.hp==0:
                         screen.blit(death,(0,0)) 
@@ -619,8 +617,7 @@ class Interface():
                     screen.blit(dvfu,(1125,20))
                     screen.blit(square,(670,525))
                     screen.blit(goodtest,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
                 
                 if fight3==False:
@@ -660,8 +657,7 @@ class Interface():
                     print_boss(boss.hp)
                     screen.blit(dvfu,(1125,20))
                     screen.blit(test4,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
 
                 if after_fight4==False:
@@ -670,8 +666,7 @@ class Interface():
                     print_boss(boss.hp)
                     screen.blit(dvfu,(1125,20))
                     screen.blit(badtest,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
                     if player.hp==0:
                         screen.blit(death,(0,0)) 
@@ -683,8 +678,7 @@ class Interface():
                     screen.blit(dvfu,(1125,20))
                     screen.blit(square,(670,525))
                     screen.blit(goodtest,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
 
                 if fight5==False:
@@ -692,8 +686,7 @@ class Interface():
                     print_boss(boss.hp)
                     screen.blit(dvfu,(1125,20))
                     screen.blit(test5,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
 
                 if after_fight5==False:
@@ -702,8 +695,7 @@ class Interface():
                     print_boss(boss.hp)
                     screen.blit(dvfu,(1125,20))
                     screen.blit(badtest,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
                     if player.hp==0:
                         screen.blit(death,(0,0)) 
@@ -715,8 +707,7 @@ class Interface():
                     screen.blit(dvfu,(1125,20))
                     screen.blit(square,(670,525))
                     screen.blit(goodtest,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
                         
                 if fight6==False:
@@ -724,8 +715,7 @@ class Interface():
                     print_boss(boss.hp)
                     screen.blit(dvfu,(1125,20))
                     screen.blit(test6,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
 
                 if after_fight6==False:
@@ -734,8 +724,7 @@ class Interface():
                     print_boss(boss.hp)
                     screen.blit(dvfu,(1125,20))
                     screen.blit(badtest,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
                     if player.hp==0:
                         screen.blit(death,(0,0)) 
@@ -747,8 +736,7 @@ class Interface():
                     screen.blit(dvfu,(1125,20))
                     screen.blit(square,(670,525))
                     screen.blit(goodtest,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
 
                 if fight7==False:
@@ -756,8 +744,7 @@ class Interface():
                     print_boss(boss.hp)
                     screen.blit(dvfu,(1125,20))
                     screen.blit(test7,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
 
                 if after_fight7==False:
@@ -766,8 +753,7 @@ class Interface():
                     print_boss(boss.hp)
                     screen.blit(dvfu,(1125,20))
                     screen.blit(badtest,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
                     if player.hp==0:
                         screen.blit(death,(0,0)) 
@@ -779,8 +765,7 @@ class Interface():
                     screen.blit(dvfu,(1125,20))
                     screen.blit(square,(670,525))
                     screen.blit(goodtest,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
+
                     pygame.time.delay(70)
 
                 if fight8==False:
@@ -788,8 +773,6 @@ class Interface():
                     print_boss(boss.hp)
                     screen.blit(dvfu,(1125,20))
                     screen.blit(test8,(300,100))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))
                     pygame.time.delay(70)
                     
                 if after_fight8==True:
@@ -798,11 +781,21 @@ class Interface():
                     print_boss(boss.hp)
                     screen.blit(dvfu,(1125,20))
                     screen.blit(square,(670,525))
-                    screen.blit(goodtest,(600,200))
-                    if boss.hp==0:
-                            screen.blit(cat,(0,0))  
+                    screen.blit(goodtest,(600,200)) 
                     pygame.time.delay(70)
-            
+
+                if boss.hp==0:
+                    screen.blit(cat,(0,0))
+
+                if player.hp==0:
+                    screen.blit(death,(0,0))
+
+                if bad:
+                    screen.blit(badend,(0,0))
+                    loose=True
+
+                pygame.display.update()
+
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         running = False
@@ -811,11 +804,25 @@ class Interface():
                     elif event.type == pygame.KEYDOWN:
                         
                         if location==False:
-                            if event.key == pygame.K_SPACE:
-                                bad=False
-                            if event.key == pygame.K_RETURN:
+                            if event.key == pygame.K_SPACE and good:
+                                bad=True
+                            if event.key == pygame.K_RETURN and not(bad):
                                 good=False
-                                
+                                                       
+                        # if fight1==False and fight2==True:
+                        #     if event.key == pygame.K_1:
+                        #         after_fight1=False
+                        #         player.hp -= boss.damage
+                        #     if event.key == pygame.K_2:
+                        #         after_fight1=False
+                        #         player.hp -= boss.damage
+                        #     if event.key == pygame.K_3:
+                        #         after_fight1=True
+                        #         boss.hp -= 1
+                        #     if event.key == pygame.K_4:
+                        #         after_fight1=False
+                        #         player.hp -= boss.damage
+
                         if fight1==False and fight2==True:
                             if event.key == pygame.K_1:
                                 after_fight1=False
@@ -825,7 +832,7 @@ class Interface():
                                 player.hp -= boss.damage
                             if event.key == pygame.K_3:
                                 after_fight1=True
-                                boss.hp -= player.damage
+                                boss.hp -= 1
                             if event.key == pygame.K_4:
                                 after_fight1=False
                                 player.hp -= boss.damage
@@ -840,7 +847,7 @@ class Interface():
                                 player.hp -= boss.damage
                             if event.key == pygame.K_2:
                                 after_fight2=True
-                                boss.hp -= player.damage   
+                                boss.hp -= 1   
                             if event.key == pygame.K_3:
                                 after_fight2=False
                                 player.hp -= boss.damage
@@ -858,7 +865,7 @@ class Interface():
                                 player.hp -= boss.damage
                             if event.key == pygame.K_2:
                                 after_fight3=True
-                                boss.hp -= player.damage   
+                                boss.hp -= 1   
                             if event.key == pygame.K_3:
                                 after_fight3=False
                                 player.hp -= boss.damage
@@ -876,7 +883,7 @@ class Interface():
                                 player.hp -= boss.damage
                             if event.key == pygame.K_2:
                                 after_fight4=True
-                                boss.hp -= player.damage
+                                boss.hp -= 1
                             if event.key == pygame.K_3:
                                 after_fight4=False
                                 player.hp -= boss.damage
@@ -897,7 +904,7 @@ class Interface():
                                 player.hp -= boss.damage
                             if event.key == pygame.K_3:
                                 after_fight5=True
-                                boss.hp -= player.damage
+                                boss.hp -= 1
                             if event.key == pygame.K_4:
                                 after_fight5=False
                                 player.hp -= boss.damage
@@ -909,7 +916,7 @@ class Interface():
                         if fight6==False and fight7==True:
                             if event.key == pygame.K_1:
                                 after_fight6=True
-                                boss.hp -= player.damage 
+                                boss.hp -= 1 
                             if event.key == pygame.K_2:
                                 after_fight6=False
                                 player.hp -= boss.damage
@@ -936,7 +943,7 @@ class Interface():
                                 player.hp -= boss.damage
                             if event.key == pygame.K_4:
                                 after_fight7=True
-                                boss.hp -= player.damage 
+                                boss.hp -= 1 
 
                         if newfight7==False:
                             if event.key == pygame.K_RETURN:
@@ -945,22 +952,49 @@ class Interface():
                         if fight8==False and fightend==True:
                             if event.key == pygame.K_1:
                                 after_fight8=True
-                                boss.hp -= player.damage
+                                boss.hp -= 1
                             if event.key == pygame.K_2:
                                 after_fight8=True
-                                boss.hp -= player.damage 
+                                boss.hp -= 1 
                             if event.key == pygame.K_3:
                                 after_fight8=True
-                                boss.hp -= player.damage 
+                                boss.hp -= 1 
                             if event.key == pygame.K_4:
                                 after_fight8=True
-                                boss.hp -= player.damage 
+                                boss.hp -= 1 
 
                         if newfight8==False:
                             if event.key == pygame.K_RETURN:
-                                fight8=False
-                        
+                                fight8=False  
+
+                        if ((bad and loose) or boss.hp==0) and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN):
+                            mainsound.stop()
+                            Interface.game.credits(screen, running)
+
+        def credits(screen, running):
+            credits = Video("video/credits.mp4")
+            credits.set_size((1280, 768)) 
+            flag = True
+            
+
+            while running:
+                if credits.active == False:
+                    Interface.menu.main_menu(screen, running)
+
+                credits.draw(screen, (0, 0))
+
+                Interface.print_text(screen, "Press SPACE to skip credits", 900, 0, "Grey", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 30) 
                 
-                pygame.display.update()                            
+
+                pygame.display.update()
+
+                for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            running = False
+                            pygame.quit()
+                        elif event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_SPACE:
+                                credits.close()
+                                Interface.menu.main_menu(screen, running)
 
 
