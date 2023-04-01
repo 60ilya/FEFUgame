@@ -413,14 +413,14 @@ class Interface():
                 player.moving()
                 
                 Mob.spawn(map, screen, xy, mobs_room, mob1, mob2, mob3, mob4, mobs_list)
-                Mob.move_towards_player(mobs_list, player)
+                
 
                 player.shooting(bullets, screen, egg)
                 Interface.print_stat(screen, player)
 
                 
                 Mob.collision(player, mobs_list, bullets)
-
+                Mob.move_towards_player(mobs_list, player)
 
                 Item.create_item(gold_x, gold_y, map, item.texture, screen, player)
                 Item.collision(item_hitbox, player, gold_x, gold_y, map, item)
