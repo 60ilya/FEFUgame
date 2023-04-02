@@ -632,7 +632,10 @@ class Interface():
                         pygame.quit()
                         
                     elif event.type == pygame.KEYDOWN:
-                        
+
+                        if event.key == pygame.K_ESCAPE:
+                            Interface.menu.main_menu(screen, running)    
+                                               
                         if not(test) and not(endgame):
 
                             if event.key == pygame.K_SPACE and not(test):
@@ -718,6 +721,8 @@ class Interface():
                         if endgame and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN):
                             mainsound.stop()      
                             Interface.game.credits(screen, running)
+                        
+
 
         def credits(screen, running):
             credits = Video("video/credits.mp4")
