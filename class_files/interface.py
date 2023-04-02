@@ -21,7 +21,7 @@ class Interface():
         Interface.print_text(screen, "hp", 50, 50, "Red", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 70)
         
         for i in range(player.hp):
-            screen.blit(player.texture, (120 + i*80, 50))
+            screen.blit(player.texture, (120 + i * 80, 50))
         Interface.print_text(screen, "dmg", 30, 340, "Yellow", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 30)
         Interface.print_text(screen, "spd", 30, 300, "Yellow", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 30)
         Interface.print_text(screen, f"{player.damage}", 100, 340, "White", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 40)
@@ -54,7 +54,12 @@ class Interface():
                             Interface.menu.main_menu(screen, running)
     #миникарта
     class minimap():
+
         def room_minimap(map, room):
+            
+            pygame.draw.rect(room, (96, 96, 96), (1065, 5, 205, 205), 10, 10)    
+            
+            
 
             for i in range(10):
                 for j in range(10):
@@ -117,7 +122,7 @@ class Interface():
         door_hor = pygame.image.load("img/doors/horizontal.png")
         door_ver = pygame.image.load("img/doors/vertical.png")
 
-        def room_changing(player, map, room_x, room_y, room, bullets: list, mobs_list, mob1, mob2, mob3, mob4, mobs_room): 
+        def room_changing(player, map, room_x, room_y, room, bullets, mobs_list, mob1, mob2, mob3, mob4, mobs_room): 
             if player.x < 226 and map[room_x][room_y - 1] != 0:
                 bullets.clear()
                 if map[room_x][room_y] not in range(4, 6):
@@ -129,8 +134,9 @@ class Interface():
                 player.x = 965
                 player.y = 408
                 Interface.minimap.player_minimap(map, room)
-                if [room_x, room_y - 1] in mobs_room: 
+                if [room_x, room_y] in mobs_room: 
                     mobs_list.extend([mob1, mob2, mob3, mob4])
+                    print(mob1.hp, mob2.hp, mob3.hp, mob4.hp)
                 for i in range(10):
                     print(map[i])
                 print()
@@ -148,8 +154,9 @@ class Interface():
                 player.x = 258
                 player.y = 418
                 Interface.minimap.player_minimap(map, room)
-                if [room_x, room_y + 1] in mobs_room: 
+                if [room_x, room_y] in mobs_room: 
                     mobs_list.extend([mob1, mob2, mob3, mob4])
+                    print(mob1.hp, mob2.hp, mob3.hp, mob4.hp)
                 for i in range(10):
                     print(map[i])
                 print()
@@ -165,8 +172,9 @@ class Interface():
                 player.x = 611
                 player.y = 603
                 Interface.minimap.player_minimap(map, room)
-                if [room_x - 1, room_y] in mobs_room: 
+                if [room_x, room_y] in mobs_room: 
                     mobs_list.extend([mob1, mob2, mob3, mob4])
+                    print(mob1.hp, mob2.hp, mob3.hp, mob4.hp)
                 for i in range(10):
                     print(map[i])
                 print()
@@ -182,8 +190,9 @@ class Interface():
                 player.x = 604
                 player.y = 224
                 Interface.minimap.player_minimap(map, room)
-                if [room_x + 1, room_y] in mobs_room: 
+                if [room_x, room_y] in mobs_room: 
                     mobs_list.extend([mob1, mob2, mob3, mob4])
+                    print(mob1.hp, mob2.hp, mob3.hp, mob4.hp)
                 for i in range(10):
                     print(map[i])
                 print()
@@ -417,10 +426,10 @@ class Interface():
             door_hor = pygame.image.load("img/doors/horizontal.png")
             door_ver = pygame.image.load("img/doors/vertical.png")
 
-            mob1 = Mob(50, 1, cats, 0.5, 580, 470, None)
-            mob2 = Mob(50, 1, cats, 0.5, 510, 400, None)
-            mob3 = Mob(50, 1, cats, 0.5, 650, 400, None)
-            mob4 = Mob(50, 1, cats, 0.5, 580, 330, None)
+            mob1 = Mob(10, 1, cats, 0.5, 580, 410, None, "d")
+            mob2 = Mob(10, 1, cats, 0.5, 510, 400, None, "l")
+            mob3 = Mob(10, 1, cats, 0.5, 650, 400, None, "r")
+            mob4 = Mob(10, 1, cats, 0.5, 580, 390, None, "u")
 
 
             
@@ -433,10 +442,10 @@ class Interface():
             mobs_list = []
             
             bullets = []
+            print(mobs_room)
 
             while running:
                 
-
                 player.hitbox = player.texture.get_rect(topleft = (player.x, player.y))
 
                 Game.map.room_inv_block(map, room_x, room_y, player)
@@ -446,15 +455,15 @@ class Interface():
                 
 
                 room, room_x, room_y = Interface.room.room_changing(player, map, room_x, room_y, room, bullets, mobs_list, mob1, mob2, mob3, mob4, mobs_room)
-                xy = player.room_coordinates(map)
 
                 screen.blit(room, (0, 0))
 
                 screen.blit(player.texture, (player.x, player.y))
                 player.moving()
                 
-                Mob.spawn(map, screen, xy, mobs_room, mob1, mob2, mob3, mob4, mobs_list)
+                Mob.spawn(map, screen, [room_x, room_y], mobs_room, mob1, mob2, mob3, mob4, mobs_list)
                 Mob.get_hitbox(mobs_list)
+                Mob.move_towards_player(mobs_list, player)
 
                 Interface.room.block_rooms(mobs_list, player, screen, door_ver, door_hor, map, room_x, room_y)
                 
@@ -467,7 +476,9 @@ class Interface():
 
                 
                 Mob.collision(player, mobs_list, bullets)
-                Mob.move_towards_player(mobs_list, player)
+                Mob.collision_player(mobs_list, player)
+                Mob.collide_each_other(mobs_list)
+                
 
                 Item.create_item(gold_x, gold_y, map, item.texture, screen, player)
                 Item.collision(item_hitbox, player, gold_x, gold_y, map, item)
@@ -517,6 +528,7 @@ class Interface():
                         if event.key == pygame.K_DOWN:
                             if len(bullets) < 5:
                                 bullets.append(Arrow(player.x + 35, player.y + 35, "s", egg))
+
 
         def boss_fight(screen, player, running):
             

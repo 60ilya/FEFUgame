@@ -33,3 +33,12 @@ door_up_open = (700, 164)
 door_down_open = (368, 646)
 door_left_open = (200, 180)
 door_right_open = (1000, 512)
+
+mob_leftx = 510
+mob_rightx = 650
+mob_upx = 580
+mob_downx = 580
+mob_lefty = 400
+mob_righty = 400
+mob_upy = 390
+mob_downy = 410
