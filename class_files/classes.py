@@ -1,4 +1,5 @@
 import pygame
+import math
 import random
 
 #основной класс
@@ -168,6 +169,8 @@ class Archer(Player):
 
 
 class Mob():
+    image = pygame.image.load("img/enemy/mobs/cats.png")
+    
     def __init__(self, hp, damage, texture, speed, x, y, hitbox):
         self.hp = hp
         self.damage = damage
@@ -177,11 +180,30 @@ class Mob():
         self.y = y
         self.hitbox = hitbox
 
-    def collision(self, bullets, mobs_list, mob1, mob2, mob3, mob4):
-        pass
+
+    def collision(player, mobs_list, bullets: list):
+        if len(mobs_list) > 0 and len(bullets) > 0:
+            for bullet in bullets:
+                print(bullet.hitbox)
+                for mob in mobs_list:
+                    if bullet.hitbox.colliderect(mob.hitbox):
+                        print("collision")
+                        if len(bullets) != 0:
+                            bullets.pop(bullets.index(bullet))
+                        mobs_list.pop(mobs_list.index(mob))
+                        print(mobs_list)
+                    
+        
+        return mobs_list
+    
+    def get_hitbox(mobs_list):
+        for mob in mobs_list:
+            mob.hitbox = mob.texture.get_rect(topleft=(mob.x, mob.y))
 
     def spawn(map, screen, xy, mobs_room, mob1, mob2, mob3, mob4, mobs_list):
+        
         if xy in mobs_room:
+
             if mob1 in mobs_list:
                 screen.blit(mob1.texture, (mob1.x, mob1.y))
             if mob2 in mobs_list:
@@ -190,8 +212,21 @@ class Mob():
                 screen.blit(mob3.texture, (mob3.x, mob3.y))
             if mob4 in mobs_list:
                 screen.blit(mob4.texture, (mob4.x, mob4.y))
-            if len(mobs_room) == 0:
+
+            if len(mobs_list) == 0:
                 mobs_room.remove(xy)
+                print("REMOVE")
+
+    def move_towards_player(mobs_list, player):
+        for mob in mobs_list:
+            dx, dy = player.x - mob.x, player.y - mob.y
+            dist = math.hypot(dx, dy)
+            dx, dy = dx / dist, dy / dist  # Normalize.
+            # Move along this normalized vector towards the player at current speed.
+            mob.x += dx * mob.speed
+            mob.y += dy * mob.speed
+            print(mob.hitbox)
+
 #класс босса
 class Boss:
     def __init__(self, texture, hp, damage, x, y):
@@ -220,14 +255,22 @@ class Boss:
 
 #класс стрелы
 class Arrow:
-    def __init__(self, x, y, facing):
+    image = pygame.image.load("img/shoot/egg.png")
+
+    def __init__(self, x, y, facing, texture):
         self.x = x
         self.y = y
         self.facing = facing
         self.vel = 3
+        self.hitbox = Arrow.image.get_rect(topleft = (self.x, self.y))
+        self.texture = texture
 
     def draw(self, screen, egg):
         screen.blit(egg, (self.x, self.y))
+
+    def get_hitbox(bullets):
+        for bullet in bullets:
+            bullet.hitbox = bullet.texture.get_rect(topleft=(bullet.x, bullet.y))
 
 
 class Item:

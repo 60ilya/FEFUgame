@@ -114,7 +114,7 @@ class Interface():
         URL = "img/rooms/url.jpeg"
         URDL = "img/rooms/urdl.jpeg"
 
-        def room_changing(player, map, room_x, room_y, room, bullets: list): 
+        def room_changing(player, map, room_x, room_y, room, bullets: list, mobs_list, mob1, mob2, mob3, mob4, mobs_room): 
             if player.x < 226 and map[room_x][room_y - 1] != 0:
                 bullets.clear()
                 if map[room_x][room_y] not in range(4, 6):
@@ -126,8 +126,12 @@ class Interface():
                 player.x = 965
                 player.y = 408
                 Interface.minimap.player_minimap(map, room)
+                if [room_x, room_y - 1] in mobs_room: 
+                    print("EXTEND")
+                    mobs_list.extend([mob1, mob2, mob3, mob4])
                 for i in range(10):
                     print(map[i])
+                
 
             if player.x > 1000 and map[room_x][room_y + 1] != 0:
                 bullets.clear()
@@ -141,6 +145,8 @@ class Interface():
                 player.x = 258
                 player.y = 418
                 Interface.minimap.player_minimap(map, room)
+                if [room_x, room_y + 1] in mobs_room: 
+                    mobs_list.extend([mob1, mob2, mob3, mob4])
                 for i in range(10):
                     print(map[i])
 
@@ -155,6 +161,8 @@ class Interface():
                 player.x = 611
                 player.y = 603
                 Interface.minimap.player_minimap(map, room)
+                if [room_x - 1, room_y] in mobs_room: 
+                    mobs_list.extend([mob1, mob2, mob3, mob4])
                 for i in range(10):
                     print(map[i])
 
@@ -169,6 +177,8 @@ class Interface():
                 player.x = 604
                 player.y = 224
                 Interface.minimap.player_minimap(map, room)
+                if [room_x + 1, room_y] in mobs_room: 
+                    mobs_list.extend([mob1, mob2, mob3, mob4])
                 for i in range(10):
                     print(map[i])
 
@@ -366,12 +376,11 @@ class Interface():
             cats = pygame.image.load("img/enemy/mobs/cats.png")
             egg = pygame.image.load("img/shoot/egg.png")
 
-            mob1 = Mob(50, 1, cats, 2, 580, 470, None)
-            mob2 = Mob(50, 1, cats, 2, 510, 400, None)
-            mob3 = Mob(50, 1, cats, 2, 650, 400, None)
-            mob4 = Mob(50, 1, cats, 2, 580, 330, None)
+            mob1 = Mob(50, 1, cats, 0.5, 580, 470, None)
+            mob2 = Mob(50, 1, cats, 0.5, 510, 400, None)
+            mob3 = Mob(50, 1, cats, 0.5, 650, 400, None)
+            mob4 = Mob(50, 1, cats, 0.5, 580, 330, None)
 
-            mobs_list = [mob1, mob2, mob3, mob4]
 
             
 
@@ -380,11 +389,12 @@ class Interface():
 
             mobs_room = Interface.room.get_mobs_rooms(map, screen)
             
-
+            mobs_list = []
+            
             bullets = []
 
             while running:
-                xy = player.room_coordinates(map)
+                
 
                 player.hitbox = player.texture.get_rect(topleft = (player.x, player.y))
 
@@ -392,23 +402,36 @@ class Interface():
                 
                 Interface.minimap.room_minimap(map, room)
                 Interface.minimap.player_minimap(map, room)
+                
 
-                room, room_x, room_y = Interface.room.room_changing(player, map, room_x, room_y, room, bullets)
+                room, room_x, room_y = Interface.room.room_changing(player, map, room_x, room_y, room, bullets, mobs_list, mob1, mob2, mob3, mob4, mobs_room)
+                xy = player.room_coordinates(map)
 
                 screen.blit(room, (0, 0))
 
                 screen.blit(player.texture, (player.x, player.y))
                 player.moving()
                 
+                Mob.spawn(map, screen, xy, mobs_room, mob1, mob2, mob3, mob4, mobs_list)
+                Mob.get_hitbox(mobs_list)
+                
+
+                player.shooting(bullets, screen, egg)
+                Arrow.get_hitbox(bullets)
+
+
                 Interface.print_stat(screen, player)
 
-                Mob.spawn(map, screen, xy, mobs_room, mob1, mob2, mob3, mob4, mobs_list)
-
+                
+                Mob.collision(player, mobs_list, bullets)
+                Mob.move_towards_player(mobs_list, player)
 
                 Item.create_item(gold_x, gold_y, map, item.texture, screen, player)
                 Item.collision(item_hitbox, player, gold_x, gold_y, map, item)
+
                 
-                player.shooting(bullets, screen, egg)
+                
+                
 
                 
                 pygame.display.update()
@@ -438,19 +461,19 @@ class Interface():
                         
                         if event.key == pygame.K_LEFT:
                             if len(bullets) < 5:
-                                bullets.append(Arrow(player.x + 35, player.y + 35, "a"))
+                                bullets.append(Arrow(player.x + 35, player.y + 35, "a", egg))
 
                         if event.key == pygame.K_RIGHT:
                             if len(bullets) < 5:
-                                bullets.append(Arrow(player.x + 35, player.y + 35, "d"))
+                                bullets.append(Arrow(player.x + 35, player.y + 35, "d", egg))
                             
                         if event.key == pygame.K_UP:
                             if len(bullets) < 5:
-                                bullets.append(Arrow(player.x + 35, player.y + 35, "w"))
+                                bullets.append(Arrow(player.x + 35, player.y + 35, "w", egg))
                                 
                         if event.key == pygame.K_DOWN:
                             if len(bullets) < 5:
-                                bullets.append(Arrow(player.x + 35, player.y + 35, "s"))
+                                bullets.append(Arrow(player.x + 35, player.y + 35, "s", egg))
 
         def boss_fight(screen, player, running):
             
