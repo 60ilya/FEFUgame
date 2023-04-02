@@ -376,10 +376,10 @@ class Interface():
             cats = pygame.image.load("img/enemy/mobs/cats.png")
             egg = pygame.image.load("img/shoot/egg.png")
 
-            mob1 = Mob(50, 1, cats, 0.5, 580, 470)
-            mob2 = Mob(50, 1, cats, 0.5, 510, 400)
-            mob3 = Mob(50, 1, cats, 0.5, 650, 400)
-            mob4 = Mob(50, 1, cats, 0.5, 580, 330)
+            mob1 = Mob(50, 1, cats, 0.5, 580, 470, None)
+            mob2 = Mob(50, 1, cats, 0.5, 510, 400, None)
+            mob3 = Mob(50, 1, cats, 0.5, 650, 400, None)
+            mob4 = Mob(50, 1, cats, 0.5, 580, 330, None)
 
 
             
@@ -413,9 +413,13 @@ class Interface():
                 player.moving()
                 
                 Mob.spawn(map, screen, xy, mobs_room, mob1, mob2, mob3, mob4, mobs_list)
+                Mob.get_hitbox(mobs_list)
                 
 
                 player.shooting(bullets, screen, egg)
+                Arrow.get_hitbox(bullets)
+
+
                 Interface.print_stat(screen, player)
 
                 
@@ -456,19 +460,19 @@ class Interface():
                         
                         if event.key == pygame.K_LEFT:
                             if len(bullets) < 5:
-                                bullets.append(Arrow(player.x + 35, player.y + 35, "a"))
+                                bullets.append(Arrow(player.x + 35, player.y + 35, "a", egg))
 
                         if event.key == pygame.K_RIGHT:
                             if len(bullets) < 5:
-                                bullets.append(Arrow(player.x + 35, player.y + 35, "d"))
+                                bullets.append(Arrow(player.x + 35, player.y + 35, "d", egg))
                             
                         if event.key == pygame.K_UP:
                             if len(bullets) < 5:
-                                bullets.append(Arrow(player.x + 35, player.y + 35, "w"))
+                                bullets.append(Arrow(player.x + 35, player.y + 35, "w", egg))
                                 
                         if event.key == pygame.K_DOWN:
                             if len(bullets) < 5:
-                                bullets.append(Arrow(player.x + 35, player.y + 35, "s"))
+                                bullets.append(Arrow(player.x + 35, player.y + 35, "s", egg))
 
         # def boss_fight(screen, player):
             

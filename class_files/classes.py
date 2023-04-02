@@ -171,23 +171,22 @@ class Archer(Player):
 class Mob():
     image = pygame.image.load("img/enemy/mobs/cats.png")
     
-    def __init__(self, hp, damage, texture, speed, x, y):
+    def __init__(self, hp, damage, texture, speed, x, y, hitbox):
         self.hp = hp
         self.damage = damage
         self.texture = texture
         self.speed = speed
         self.x = x
         self.y = y
-        self.hitbox = Mob.image.get_rect(topleft=(self.x, self.y))
+        self.hitbox = hitbox
 
 
     def collision(player, mobs_list, bullets: list):
         if len(mobs_list) > 0 and len(bullets) > 0:
             for bullet in bullets:
-                hitbox = Mob.image.get_rect(topleft=(bullet.x, bullet.y))
-                print(hitbox)
+                print(bullet.hitbox)
                 for mob in mobs_list:
-                    if hitbox.colliderect(mob.hitbox):
+                    if bullet.hitbox.colliderect(mob.hitbox):
                         print("collision")
                         if len(bullets) != 0:
                             bullets.pop(bullets.index(bullet))
@@ -196,6 +195,10 @@ class Mob():
                     
         
         return mobs_list
+    
+    def get_hitbox(mobs_list):
+        for mob in mobs_list:
+            mob.hitbox = mob.texture.get_rect(topleft=(mob.x, mob.y))
 
     def spawn(map, screen, xy, mobs_room, mob1, mob2, mob3, mob4, mobs_list):
         
@@ -222,6 +225,7 @@ class Mob():
             # Move along this normalized vector towards the player at current speed.
             mob.x += dx * mob.speed
             mob.y += dy * mob.speed
+            print(mob.hitbox)
 
 #класс босса
 class Boss:
@@ -256,15 +260,20 @@ class Boss(Enemy):
 class Arrow:
     image = pygame.image.load("img/shoot/egg.png")
 
-    def __init__(self, x, y, facing):
+    def __init__(self, x, y, facing, texture):
         self.x = x
         self.y = y
         self.facing = facing
         self.vel = 3
         self.hitbox = Arrow.image.get_rect(topleft = (self.x, self.y))
+        self.texture = texture
 
     def draw(self, screen, egg):
         screen.blit(egg, (self.x, self.y))
+
+    def get_hitbox(bullets):
+        for bullet in bullets:
+            bullet.hitbox = bullet.texture.get_rect(topleft=(bullet.x, bullet.y))
 
 
 class Item:
