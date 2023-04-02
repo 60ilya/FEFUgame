@@ -184,14 +184,12 @@ class Mob():
     def collision(player, mobs_list, bullets: list):
         if len(mobs_list) > 0 and len(bullets) > 0:
             for bullet in bullets:
-                print(bullet.hitbox)
                 for mob in mobs_list:
                     if bullet.hitbox.colliderect(mob.hitbox):
-                        print("collision")
                         if len(bullets) != 0:
                             bullets.pop(bullets.index(bullet))
                         mobs_list.pop(mobs_list.index(mob))
-                        print(mobs_list)
+
                     
         
         return mobs_list
@@ -215,7 +213,6 @@ class Mob():
 
             if len(mobs_list) == 0:
                 mobs_room.remove(xy)
-                print("REMOVE")
 
     def move_towards_player(mobs_list, player):
         for mob in mobs_list:
@@ -225,7 +222,6 @@ class Mob():
             # Move along this normalized vector towards the player at current speed.
             mob.x += dx * mob.speed
             mob.y += dy * mob.speed
-            print(mob.hitbox)
 
 #класс босса
 class Boss:

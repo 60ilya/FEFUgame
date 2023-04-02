@@ -2,7 +2,7 @@ import pygame
 from pyvidplayer import Video
 from class_files.game import Game
 from class_files.classes import Player, SpeedBoost, HealthPotion, DamageBoost, Item, Archer, Warrior, Arrow, Boss, Mob
-from const import door_up, door_down, door_left, door_right
+from const import door_up, door_down, door_left, door_right, door_up_open, door_down_open, door_left_open, door_right_open
 import random
 
 
@@ -114,6 +114,9 @@ class Interface():
         URL = "img/rooms/url.jpeg"
         URDL = "img/rooms/urdl.jpeg"
 
+        door_hor = pygame.image.load("img/doors/horizontal.png")
+        door_ver = pygame.image.load("img/doors/vertical.png")
+
         def room_changing(player, map, room_x, room_y, room, bullets: list, mobs_list, mob1, mob2, mob3, mob4, mobs_room): 
             if player.x < 226 and map[room_x][room_y - 1] != 0:
                 bullets.clear()
@@ -127,10 +130,10 @@ class Interface():
                 player.y = 408
                 Interface.minimap.player_minimap(map, room)
                 if [room_x, room_y - 1] in mobs_room: 
-                    print("EXTEND")
                     mobs_list.extend([mob1, mob2, mob3, mob4])
                 for i in range(10):
                     print(map[i])
+                print()
                 
 
             if player.x > 1000 and map[room_x][room_y + 1] != 0:
@@ -149,6 +152,7 @@ class Interface():
                     mobs_list.extend([mob1, mob2, mob3, mob4])
                 for i in range(10):
                     print(map[i])
+                print()
 
             if player.y < 195 and map[room_x - 1][room_y] != 0:
                 bullets.clear()
@@ -165,6 +169,7 @@ class Interface():
                     mobs_list.extend([mob1, mob2, mob3, mob4])
                 for i in range(10):
                     print(map[i])
+                print()
 
             if player.y > 640 and map[room_x + 1][room_y] != 0:
                 bullets.clear()
@@ -181,6 +186,7 @@ class Interface():
                     mobs_list.extend([mob1, mob2, mob3, mob4])
                 for i in range(10):
                     print(map[i])
+                print()
 
             
             return room, room_x, room_y
@@ -216,9 +222,42 @@ class Interface():
                 for x in range(10):
                     if map[x][y] == 1:
                         room_with_mobs.append([x, y])
-            print(room_with_mobs)
             
             return room_with_mobs
+        
+        def block_rooms(mobs_list, player, screen, vertical, horizontal, map, x, y):
+            if len(mobs_list) != 0:
+                
+                if player.y < 222:
+                    player.y = 223
+                    
+                if player.y > 614:
+                    player.y = 613
+
+                if player.x < 244:
+                    player.x = 245
+
+                if player.x > 972:
+                    player.x = 971
+
+                if map[x][y - 1] != 0:
+                    screen.blit(vertical, door_left)
+                if map[x][y + 1] != 0:
+                    screen.blit(vertical, door_right)
+                if map[x + 1][y] != 0:
+                    screen.blit(horizontal, door_down)
+                if map[x - 1][y] != 0:
+                    screen.blit(horizontal, door_up)
+            
+            else:
+                if map[x][y - 1] != 0:
+                    screen.blit(vertical, door_left_open)
+                if map[x][y + 1] != 0:
+                    screen.blit(vertical, door_right_open)
+                if map[x + 1][y] != 0:
+                    screen.blit(horizontal, door_down_open)
+                if map[x - 1][y] != 0:
+                    screen.blit(horizontal, door_up_open)
 
         
         
@@ -292,7 +331,6 @@ class Interface():
                                 choose = 1   
 
                         if event.key == pygame.K_SPACE:
-                            print(choose)
                             Interface.game.main_game(screen, choose)
 
                         if event.key == pygame.K_ESCAPE:
@@ -376,6 +414,9 @@ class Interface():
             cats = pygame.image.load("img/enemy/mobs/cats.png")
             egg = pygame.image.load("img/shoot/egg.png")
 
+            door_hor = pygame.image.load("img/doors/horizontal.png")
+            door_ver = pygame.image.load("img/doors/vertical.png")
+
             mob1 = Mob(50, 1, cats, 0.5, 580, 470, None)
             mob2 = Mob(50, 1, cats, 0.5, 510, 400, None)
             mob3 = Mob(50, 1, cats, 0.5, 650, 400, None)
@@ -414,6 +455,8 @@ class Interface():
                 
                 Mob.spawn(map, screen, xy, mobs_room, mob1, mob2, mob3, mob4, mobs_list)
                 Mob.get_hitbox(mobs_list)
+
+                Interface.room.block_rooms(mobs_list, player, screen, door_ver, door_hor, map, room_x, room_y)
                 
 
                 player.shooting(bullets, screen, egg)
@@ -492,7 +535,6 @@ class Interface():
                     screen.blit(bigboss4,(0,100))
                 else:
                     screen.blit(bigboss,(0,100))
-                print(hp)
 
             pygame.init()
 

@@ -28,3 +28,8 @@ door_up = (534, 164)
 door_down = (534, 646)
 door_left = (200, 346)
 door_right = (1000, 346)
+
+door_up_open = (700, 164)
+door_down_open = (368, 646)
+door_left_open = (200, 180)
+door_right_open = (1000, 512)
