@@ -18,7 +18,7 @@ class Game():
             elif x - 1 != -1 and map[x - 1][y] == 0:
                 if map[x - 2][y] == 0 and map[x - 1][y + 1] == 0 and map[x - 1][y - 1] == 0:
                     map[x - 1][y] = n
-    class map():#согдание невидимого блока
+    class map():#создание невидимого блока
         def room_inv_block(map, x, y, player):
             if map[x - 1][y] == 0:
                 if player.y < 222:

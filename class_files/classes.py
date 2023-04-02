@@ -1,6 +1,7 @@
 import pygame
 import math
 import random
+from const import mob_downx, mob_downy, mob_leftx, mob_lefty, mob_rightx, mob_righty, mob_upx, mob_upy
 
 #основной класс
 class Character():
@@ -128,11 +129,6 @@ class Player(Character):
 
 
 
-#класс врагов
-class Enemy(Character):
-    def __init__(self, hp, damage, texture, speed, x, y):
-        super().__init__(hp, damage, texture, speed, x, y)
-
 #класс воина
 class Warrior(Player):
     def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y, item):
@@ -171,7 +167,7 @@ class Archer(Player):
 class Mob():
     image = pygame.image.load("img/enemy/mobs/cats.png")
     
-    def __init__(self, hp, damage, texture, speed, x, y, hitbox):
+    def __init__(self, hp, damage, texture, speed, x, y, hitbox, side):
         self.hp = hp
         self.damage = damage
         self.texture = texture
@@ -179,20 +175,40 @@ class Mob():
         self.x = x
         self.y = y
         self.hitbox = hitbox
+        self.side = side
 
 
     def collision(player, mobs_list, bullets: list):
         if len(mobs_list) > 0 and len(bullets) > 0:
-            for bullet in bullets:
-                for mob in mobs_list:
-                    if bullet.hitbox.colliderect(mob.hitbox):
-                        if len(bullets) != 0:
-                            bullets.pop(bullets.index(bullet))
-                        mobs_list.pop(mobs_list.index(mob))
+            for mob in mobs_list:
+                for bullet in bullets:
+                    if mob.hitbox.colliderect(bullet.hitbox):
+                        bullets.pop(bullets.index(bullet))
+                        mob.hp -= player.damage
+                        if mob.hp < 0:
+                            mobs_list.pop(mobs_list.index(mob))
+                            mob.hp = 10
+                            if mob.side == "l":
+                                mob.x = mob_leftx
+                                mob.y = mob_lefty
+                            elif mob.side == "r":
+                                mob.x = mob_rightx
+                                mob.y = mob_righty
+                            elif mob.side == "d":
+                                mob.x = mob_downx
+                                mob.y = mob_downy
+                            elif mob.side == "u":
+                                mob.x = mob_upx
+                                mob.y = mob_upy
 
-                    
-        
         return mobs_list
+    
+
+    def collision_player(mobs_list, player):
+        for mob in mobs_list:
+            if player.hitbox.colliderect(mob.hitbox):
+                player.hp -= mob.damage
+                mobs_list.pop(mobs_list.index(mob))
     
     def get_hitbox(mobs_list):
         for mob in mobs_list:
@@ -200,7 +216,7 @@ class Mob():
 
     def spawn(map, screen, xy, mobs_room, mob1, mob2, mob3, mob4, mobs_list):
         
-        if xy in mobs_room:
+        if (xy in mobs_room):
 
             if mob1 in mobs_list:
                 screen.blit(mob1.texture, (mob1.x, mob1.y))
@@ -215,13 +231,25 @@ class Mob():
                 mobs_room.remove(xy)
 
     def move_towards_player(mobs_list, player):
+
         for mob in mobs_list:
-            dx, dy = player.x - mob.x, player.y - mob.y
-            dist = math.hypot(dx, dy)
-            dx, dy = dx / dist, dy / dist  # Normalize.
-            # Move along this normalized vector towards the player at current speed.
-            mob.x += dx * mob.speed
-            mob.y += dy * mob.speed
+            if mob.hitbox.colliderect(player.hitbox) == False:
+                dx, dy = player.x - mob.x, player.y - mob.y
+                dist = math.hypot(dx, dy)
+                dx, dy = dx / dist, dy / dist  # Normalize.
+                # Move along this normalized vector towards the player at current speed.
+                mob.x += dx * mob.speed
+                mob.y += dy * mob.speed
+
+    def collide_each_other(mobs_list):
+        for mobs1 in mobs_list:
+            for mobs2 in mobs_list:
+                if mobs1.hitbox.colliderect(mobs2.hitbox):
+                    mobs1.x += 30
+                    mobs1.y += 30
+                    mobs2.x -= 30
+                    mobs2.y -= 30
+
 
 #класс босса
 class Boss:
