@@ -216,9 +216,6 @@ class Boss:
                 mobs_room.remove(xy)
                     # return mob1, mob2, mob3, mob4
 
-class Boss(Enemy):
-    def __init__(self, name, hp, damage, texture, x, y):
-        super().__init__(name, hp, damage, texture, x, y)
 
 
 #класс стрелы
