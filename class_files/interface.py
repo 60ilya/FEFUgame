@@ -416,7 +416,7 @@ class Interface():
                 player = Archer(vanechka_small, None, 2, 4, 1.5, 1.2, False, 540, 300, False)            
             elif choose == 1:
                 dimochka_small = pygame.image.load("img/players/dimochka.png")
-                player = Archer(dimochka_small, None, 3, 3, 1.5, 1.2, False, 540, 300, False) 
+                player = Archer(dimochka_small, None, 3, 10, 1.5, 1.2, False, 540, 300, False) 
             else:
                 shaman_small = pygame.image.load("img/players/shaman.png")
                 player = Archer(shaman_small, None, 4, 2, 1.5, 1.2, False, 540, 300, False)
@@ -436,6 +436,7 @@ class Interface():
             mob3 = Mob(10, 1, cats, 0.5, 650, 400, None, "r")
             mob4 = Mob(10, 1, cats, 0.5, 580, 390, None, "u")
 
+            boss = Boss(pygame.image.load("img/boss/klunin5.png"), 10, 1, 0.5, 500, 300)
 
             
 
@@ -492,12 +493,22 @@ class Interface():
                 Item.create_item(gold_x, gold_y, map, item.texture, screen, player)
                 Item.collision(item_hitbox, player, gold_x, gold_y, map, item)
 
-                
-                if player.hp < 0:
+# Действия в комнате босса
+                if room_x==boss_x and room_y==boss_y:
+                    block = 1
+                    Boss.spawn(map, screen, boss)
+                    Boss.get_hitbox(boss)
+                    Boss.move_towards_player(boss, player)
+                    if player.hitbox.colliderect(boss.hitbox):
+                        pygame.mixer.music.pause()
+                        Interface.game.boss_fight(screen, player, running)
+# Смерть
+                if player.hp <= 0:
                     Interface.print_text(screen, "YOU DIED", 400, 350, "Red", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 150)
                     block = 1
+                    Interface.print_text(screen, "Press SPACE to continue", 430, 450, "Grey", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 45)
                     pygame.mixer.music.pause()
-                    # Interface.game.credits(screen, running)
+
                 
                 pygame.display.update()
 
@@ -513,10 +524,12 @@ class Interface():
                             else:
                                 pygame.mixer.music.unpause()
 
+                        if player.hp<=0 and (event.key == pygame.K_RETURN or event.key == pygame.K_SPACE):
+                            Interface.game.boss_fight(screen, player, running)
+
                         if event.key == pygame.K_r:
                             pygame.mixer.music.play(-1)
                             Interface.game.main_game(screen, choose)
-
 
                         if event.key == pygame.K_b: #временное включение босса
                             pygame.mixer.music.pause()
@@ -544,7 +557,7 @@ class Interface():
 
         def boss_fight(screen, player, running):
             
-            boss = Boss(pygame.image.load("img/boss/klunin5.png"), 5, 1, 500, 100)
+            boss = Boss(pygame.image.load("img/boss/klunin5.png"), 5, 1, None, 500, 100)
 
             def print_boss(hp):
                 if hp == 5:
@@ -632,10 +645,10 @@ class Interface():
                     screen.blit(pygame.image.load("img/boss/cat_end.jpg"), (0, 0))
                     endgame = True
 
-                if player.hp == 0:
-                    test = False
-                    screen.blit(pygame.image.load("img/boss/death.jpg"), (0, 0))
-                    endgame = True
+                if player.hp<=0:
+                    test=False
+                    screen.blit(pygame.image.load("img/boss/death.jpg"),(0,0))
+                    endgame=True
 
                 if badend:
                     screen.blit(pygame.image.load("img/boss/badbad.jpg"), (0, 0))

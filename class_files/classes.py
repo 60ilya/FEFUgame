@@ -228,7 +228,6 @@ class Mob():
                 screen.blit(mob3.texture, (mob3.x, mob3.y))
             if mob4 in mobs_list:
                 screen.blit(mob4.texture, (mob4.x, mob4.y))
-
             if len(mobs_list) == 0:
                 mobs_room.remove(xy)
 
@@ -259,29 +258,29 @@ class Mob():
 
 #класс босса
 class Boss:
-    def __init__(self, texture, hp, damage, x, y):
+    def __init__(self, texture, hp, damage, speed, x, y):
         self.texture = texture
         self.hp = hp
+        self.speed = speed
         self.damage = damage
         self.x = x
         self.y = y
         self.alive = True    
 
-    def spawn(map, screen, xy, mobs_room, mob1, mob2, mob3, mob4, mobs_list):
-        if xy in mobs_room:
-            if mob1 in mobs_list:
-                screen.blit(mob1.texture, (mob1.x, mob1.y))
-            if mob2 in mobs_list:
-                screen.blit(mob2.texture, (mob2.x, mob2.y))
-            if mob3 in mobs_list:
-                screen.blit(mob3.texture, (mob3.x, mob3.y))
-            if mob4 in mobs_list:
-                screen.blit(mob4.texture, (mob4.x, mob4.y))
-            if len(mobs_room) == 0:
-                mobs_room.remove(xy)
-                    # return mob1, mob2, mob3, mob4
+    def spawn(map, screen, boss):
+        screen.blit(boss.texture, (boss.x, boss.y))
 
+    def get_hitbox(boss):
+        boss.hitbox = boss.texture.get_rect(topleft=(boss.x, boss.y))
 
+    def move_towards_player(boss, player):
+            if boss.hitbox.colliderect(player.hitbox) == False:
+                dx, dy = player.x - boss.x, player.y - boss.y
+                dist = math.hypot(dx, dy)
+                dx, dy = dx / dist, dy / dist  # Normalize.
+                # Move along this normalized vector towards the player at current speed.
+                boss.x += dx * boss.speed
+                boss.y += dy * boss.speed
 
 #класс стрелы
 class Arrow:
