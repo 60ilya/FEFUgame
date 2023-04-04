@@ -2,6 +2,7 @@ import pygame
 import math
 import random
 from const import mob_downx, mob_downy, mob_leftx, mob_lefty, mob_rightx, mob_righty, mob_upx, mob_upy
+from const import mov_up, mov_right, mov_down, mov_left
 
 #основной класс
 class Character():
@@ -42,7 +43,7 @@ class Player(Character):
     def moving(self):
         
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_w] and keys[pygame.K_a]:
+        if keys[mov_up] and keys[mov_left]:
 
             if not(self.x > 244 and self.x < 972):
                 if (self.y > 377 and self.y < 447): #ширина двери
@@ -56,7 +57,7 @@ class Player(Character):
             elif self.x > 250 or (self.y > 377 and self.y < 447):
                 self.x -= self.diagonal_speed
 
-        elif keys[pygame.K_a] and keys[pygame.K_s]:
+        elif keys[mov_left] and keys[mov_down]:
 
             if not(self.y > 222 and self.y < 614):
                 if (self.x > 570 and self.x < 646): #ширина двери
@@ -70,7 +71,7 @@ class Player(Character):
             elif self.y < 610 or (self.x > 570 and self.x < 650):
                 self.y += self.diagonal_speed
 
-        elif keys[pygame.K_s] and keys[pygame.K_d]:
+        elif keys[mov_down] and keys[mov_right]:
             if not(self.x > 244 and self.x < 972):
                 if (self.y > 377 and self.y < 447): #ширина двери
                     self.y += self.diagonal_speed
@@ -83,7 +84,7 @@ class Player(Character):
             elif self.x < 970 or (self.y > 377 and self.y < 447):
                 self.x += self.diagonal_speed
                 
-        elif keys[pygame.K_d] and keys[pygame.K_w]:
+        elif keys[mov_right] and keys[mov_up]:
 
             if not(self.y > 222 and self.y < 614):
                 if (self.x > 565 and self.x < 645): #ширина двери
@@ -97,7 +98,7 @@ class Player(Character):
             elif self.y > 223 or (self.x > 570 and self.x < 650):
                 self.y -= self.diagonal_speed
 
-        elif keys[pygame.K_a]:
+        elif keys[mov_left]:
 
             if not(self.y > 222 and self.y < 614):
                 if (self.x > 570 and self.x < 646): #ширина двери
@@ -105,7 +106,7 @@ class Player(Character):
             elif self.x > 250 or (self.y > 377 and self.y < 447):
                 self.x -= self.speed
 
-        elif keys[pygame.K_d]:
+        elif keys[mov_right]:
 
             if not(self.y > 222 and self.y < 614):
                 if (self.x > 565 and self.x < 645): #ширина двери
@@ -113,7 +114,7 @@ class Player(Character):
             elif self.x < 970 or (self.y > 377 and self.y < 447):
                 self.x += self.speed
 
-        elif keys[pygame.K_s]:
+        elif keys[mov_down]:
 
             if not(self.x > 244 and self.x < 972):
                 if (self.y > 377 and self.y < 447): #ширина двери
@@ -121,7 +122,7 @@ class Player(Character):
             elif self.y < 610 or (self.x > 570 and self.x < 650):
                 self.y += self.speed
 
-        elif keys[pygame.K_w]:
+        elif keys[mov_up]:
             if not(self.x > 244 and self.x < 972):
                 if (self.y > 377 and self.y < 447): #ширина двери
                     self.y -= self.speed

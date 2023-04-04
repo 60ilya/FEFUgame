@@ -1,3 +1,5 @@
+import pygame
+
 # rooms
 
 D = "img/rooms/d.jpeg"
@@ -42,3 +44,18 @@ mob_lefty = 400
 mob_righty = 400
 mob_upy = 390
 mob_downy = 410
+
+
+#                                                           KEYBOARD SETTINGS
+#                                        Example: switch mov_up to key O will be: mov_up = pygame.K_o
+#MOVING               
+mov_up = pygame.K_w
+mov_down = pygame.K_s
+mov_left = pygame.K_a
+mov_right = pygame.K_d
+
+#SHOOTING
+shoot_up = pygame.K_UP
+shoot_down = pygame.K_DOWN
+shoot_left = pygame.K_LEFT
+shoot_right = pygame.K_RIGHT

@@ -1,8 +1,9 @@
 import pygame
 from pyvidplayer import Video
 from class_files.game import Game
-from class_files.classes import Player, SpeedBoost, HealthPotion, DamageBoost, Item, Archer, Warrior, Arrow, Boss, Mob
+from class_files.classes import SpeedBoost, HealthPotion, DamageBoost, Item, Archer, Arrow, Boss, Mob
 from const import door_up, door_down, door_left, door_right, door_up_open, door_down_open, door_left_open, door_right_open
+from const import mov_right, mov_left, shoot_down, shoot_left, shoot_right, shoot_up
 import random
 
 
@@ -328,14 +329,14 @@ class Interface():
                                 pygame.mixer.music.pause()
                             else:
                                 pygame.mixer.music.unpause()
-                        if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                        if event.key == shoot_left or event.key == mov_left:
                             if choose == 1:
                                 choose = 0
                             elif choose == 2:
                                 choose = 1
                             else:
                                 choose = 2
-                        if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                        if event.key == shoot_right or event.key == mov_right:
                             if choose == 1:
                                 choose = 2
                             elif choose == 2:
@@ -524,19 +525,19 @@ class Interface():
                         if event.key == pygame.K_ESCAPE:
                             Interface.menu.main_menu(screen, running)
                         
-                        if event.key == pygame.K_LEFT and block == 0:
+                        if event.key == shoot_left and block == 0:
                             if len(bullets) < 5:
                                 bullets.append(Arrow(player.x + 35, player.y + 35, "a", egg))
 
-                        if event.key == pygame.K_RIGHT and block == 0:
+                        if event.key == shoot_right and block == 0:
                             if len(bullets) < 5:
                                 bullets.append(Arrow(player.x + 35, player.y + 35, "d", egg))
                             
-                        if event.key == pygame.K_UP and block == 0:
+                        if event.key == shoot_up and block == 0:
                             if len(bullets) < 5:
                                 bullets.append(Arrow(player.x + 35, player.y + 35, "w", egg))
                                 
-                        if event.key == pygame.K_DOWN and block == 0:
+                        if event.key == shoot_down and block == 0:
                             if len(bullets) < 5:
                                 bullets.append(Arrow(player.x + 35, player.y + 35, "s", egg))
 
@@ -546,57 +547,50 @@ class Interface():
             boss = Boss(pygame.image.load("img/boss/klunin5.png"), 5, 1, 500, 100)
 
             def print_boss(hp):
-                if hp==5:
-                    screen.blit(bigboss,(0,100))
-                elif hp==4:
-                    screen.blit(bigboss1,(0,100))
-                elif hp==3:
-                    screen.blit(bigboss2,(0,100))
-                elif hp==2:
-                    screen.blit(bigboss3,(0,100))
-                elif hp==1:
-                    screen.blit(bigboss4,(0,100))
+                if hp == 5:
+                    screen.blit(bigboss, (0, 100))
+                elif hp == 4:
+                    screen.blit(bigboss1, (0, 100))
+                elif hp == 3:
+                    screen.blit(bigboss2, (0, 100))
+                elif hp == 2:
+                    screen.blit(bigboss3, (0, 100))
+                elif hp == 1:
+                    screen.blit(bigboss4,(0, 100))
                 else:
-                    screen.blit(bigboss,(0,100))
+                    screen.blit(bigboss,(0, 100))
 
             pygame.init()
 
-            # bg=pygame.image.load("img/boss/bossroom.jpg")
-            bg=pygame.image.load("img/boss/menu1.jpg")
-            finalmap=pygame.image.load("img/boss/map2.jpg")
+            bg = pygame.image.load("img/boss/menu1.jpg")
 
-            badtest=pygame.image.load("img/boss/badtest.png")
-            goodtest=pygame.image.load("img/boss/goodtest.png")
-            bigboss=pygame.image.load("img/boss/boss1.png")
-            bigboss1=pygame.image.load("img/boss/boss2.png")
-            bigboss2=pygame.image.load("img/boss/boss3.png")
-            bigboss3=pygame.image.load("img/boss/boss5.png")
-            bigboss4=pygame.image.load("img/boss/boss6.png")
-            winner=pygame.image.load("img/boss/kingDima.png")
-            dvfu=pygame.image.load("img/boss/dvfu.png")
-            block=pygame.image.load("img/boss/block2.png")
+            badtest = pygame.image.load("img/boss/badtest.png")
+            goodtest = pygame.image.load("img/boss/goodtest.png")
+            bigboss = pygame.image.load("img/boss/boss1.png")
+            bigboss1 = pygame.image.load("img/boss/boss2.png")
+            bigboss2 = pygame.image.load("img/boss/boss3.png")
+            bigboss3 = pygame.image.load("img/boss/boss5.png")
+            bigboss4 = pygame.image.load("img/boss/boss6.png")
+            dvfu = pygame.image.load("img/boss/dvfu.png")
+            block = pygame.image.load("img/boss/block2.png")
 
 
-            square = pygame.Surface((430,65))
+            square = pygame.Surface((430, 65))
             square.fill("White")
-            mainsound=pygame.mixer.Sound("music/battle_music.mp3")
+            mainsound = pygame.mixer.Sound("music/battle_music.mp3")
 
-            main_string1=pygame.font.Font("fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf",40)
-            string2=main_string1.render("Вы готовы к бою?",False,"White")
-            string3=main_string1.render("Нажмите ENTER, чтобы начать ",False,"White")
-            string4=main_string1.render("Нажмите SPACE ,чтобы сбежать ",False,"White", "Black")
-            main_string2=pygame.font.Font("fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf",80)
-            string5=main_string2.render("Winner",False,"Gold")
+            main_string1 = pygame.font.Font("fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 40)
+            string2 = main_string1.render("Вы готовы к бою?", False, "White")
+            string3 = main_string1.render("Нажмите ENTER, чтобы начать ", False, "White")
+            string4 = main_string1.render("Нажмите SPACE ,чтобы сбежать ", False, "White", "Black")
 
-            badend=False
+            badend = False
             
-            test=False
-            answ=True
-            question=True
-            endgame=False
+            test = False
+            answ = True
+            question = True
+            endgame = False
             q = 1
-
-
 
 
             while True:
@@ -606,44 +600,46 @@ class Interface():
                 screen.blit(bg,(0,0))
 
                 if not(test) and not(endgame):
-                    screen.blit(string2,(150, 360))
-                    screen.blit(string3,(150, 410))
-                    screen.blit(string4,(150, 460))
+                    screen.blit(string2, (150, 360))
+                    screen.blit(string3, (150, 410))
+                    screen.blit(string4, (150, 460))
 
                 if test:
                     
-                    screen.blit(dvfu,(1125,20))
+                    screen.blit(dvfu, (1125,20))
                     print_boss(boss.hp)
                     screen.blit(block, (30,40))
                     
                     if question:
 
-                        if q==1: screen.blit(pygame.image.load("img/boss/test.png"),(570,200))
-                        if q==2: screen.blit(pygame.image.load("img/boss/test2.png"),(570,200))
-                        if q==3: screen.blit(pygame.image.load("img/boss/test3.png"),(570,200))
-                        if q==4: screen.blit(pygame.image.load("img/boss/test4.png"),(570,200))
-                        if q==5: screen.blit(pygame.image.load("img/boss/test5.png"),(570,200))
-                        if q==6: screen.blit(pygame.image.load("img/boss/test6.png"),(570,200))
-                        if q==7: screen.blit(pygame.image.load("img/boss/test7.png"),(570,200))
-                        if q==8: screen.blit(pygame.image.load("img/boss/test8.png"),(570,200))
+                        if q == 1: screen.blit(pygame.image.load("img/boss/test.png"), (570, 200))
+                        if q == 2: screen.blit(pygame.image.load("img/boss/test2.png"), (570, 200))
+                        if q == 3: screen.blit(pygame.image.load("img/boss/test3.png"), (570, 200))
+                        if q == 4: screen.blit(pygame.image.load("img/boss/test4.png"), (570, 200))
+                        if q == 5: screen.blit(pygame.image.load("img/boss/test5.png"), (570, 200))
+                        if q == 6: screen.blit(pygame.image.load("img/boss/test6.png"), (570, 200))
+                        if q == 7: screen.blit(pygame.image.load("img/boss/test7.png"), (570, 200))
+                        if q == 8: screen.blit(pygame.image.load("img/boss/test8.png"), (570, 200))
                             
                     else:
-                        if answ: screen.blit(goodtest,(600,200))
-                        else: screen.blit(badtest,(600,200))
+                        if answ: 
+                            screen.blit(goodtest,(600,200))
+                        else: 
+                            screen.blit(badtest,(600,200))
                     
-                if boss.hp==0:
-                    test=False
-                    screen.blit(pygame.image.load("img/boss/cat_end.jpg"),(0,0))
-                    endgame=True
+                if boss.hp == 0:
+                    test = False
+                    screen.blit(pygame.image.load("img/boss/cat_end.jpg"), (0, 0))
+                    endgame = True
 
-                if player.hp==0:
-                    test=False
-                    screen.blit(pygame.image.load("img/boss/death.jpg"),(0,0))
-                    endgame=True
+                if player.hp == 0:
+                    test = False
+                    screen.blit(pygame.image.load("img/boss/death.jpg"), (0, 0))
+                    endgame = True
 
                 if badend:
-                    screen.blit(pygame.image.load("img/boss/badbad.jpg"),(0,0))
-                    endgame=True
+                    screen.blit(pygame.image.load("img/boss/badbad.jpg"), (0, 0))
+                    endgame = True
 
                 
 
@@ -667,79 +663,79 @@ class Interface():
                                 test=True
 
                         if question:
-                            if q==1:
+                            if q == 1:
                                 if event.key == pygame.K_3:
                                     boss.hp -= 1
-                                    answ=True
+                                    answ = True
                                 elif event.key == pygame.K_1 or event.key == pygame.K_2 or event.key == pygame.K_4:
                                     player.hp -= boss.damage
-                                    answ=False
+                                    answ = False
                                 if event.key == pygame.K_1 or event.key == pygame.K_2 or event.key == pygame.K_3 or event.key == pygame.K_4:
                                     question=False
-                            if q==2:
+                            if q == 2:
                                 if event.key == pygame.K_2:
                                     boss.hp -= 1
-                                    answ=True
+                                    answ = True
                                 elif event.key == pygame.K_1 or event.key == pygame.K_3 or event.key == pygame.K_4:
                                     player.hp -= boss.damage
-                                    answ=False
+                                    answ = False
                                 if event.key == pygame.K_1 or event.key == pygame.K_2 or event.key == pygame.K_3 or event.key == pygame.K_4:
-                                    question=False
-                            if q==3:
+                                    question = False
+                            if q == 3:
                                 if event.key == pygame.K_2:
                                     boss.hp -= 1
-                                    answ=True
+                                    answ = True
                                 elif event.key == pygame.K_1 or event.key == pygame.K_3 or event.key == pygame.K_4:
                                     player.hp -= boss.damage
-                                    answ=False
+                                    answ = False
                                 if event.key == pygame.K_1 or event.key == pygame.K_2 or event.key == pygame.K_3 or event.key == pygame.K_4:
-                                    question=False
-                            if q==4:
+                                    question = False
+                            if q == 4:
                                 if event.key == pygame.K_2:
                                     boss.hp -= 1
-                                    answ=True
+                                    answ = True
                                 elif event.key == pygame.K_1 or event.key == pygame.K_3 or event.key == pygame.K_4:
                                     player.hp -= boss.damage
-                                    answ=False
+                                    answ = False
                                 if event.key == pygame.K_1 or event.key == pygame.K_2 or event.key == pygame.K_3 or event.key == pygame.K_4:
-                                    question=False
-                            if q==5:
+                                    question = False
+                            if q == 5:
                                 if event.key == pygame.K_3:
                                     boss.hp -= 1
-                                    answ=True
+                                    answ = True
                                 elif event.key == pygame.K_1 or event.key == pygame.K_2 or event.key == pygame.K_4:
                                     player.hp -= boss.damage
-                                    answ=False
+                                    answ = False
                                 if event.key == pygame.K_1 or event.key == pygame.K_2 or event.key == pygame.K_3 or event.key == pygame.K_4:
-                                    question=False
-                            if q==6:
+                                    question = False
+                            if q == 6:
                                 if event.key == pygame.K_1:
                                     boss.hp -= 1
-                                    answ=True
+                                    answ = True
                                 elif event.key == pygame.K_2 or event.key == pygame.K_3 or event.key == pygame.K_4:
                                     player.hp -= boss.damage
-                                    answ=False
+                                    answ = False
                                 if event.key == pygame.K_1 or event.key == pygame.K_2 or event.key == pygame.K_3 or event.key == pygame.K_4:
-                                    question=False
-                            if q==7:
+                                    question = False
+                            if q == 7:
                                 if event.key == pygame.K_4:
                                     boss.hp -= 1
-                                    answ=True
+                                    answ = True
                                 elif event.key == pygame.K_1 or event.key == pygame.K_3 or event.key == pygame.K_2:
                                     player.hp -= boss.damage
-                                    answ=False
+                                    answ = False
                                 if event.key == pygame.K_1 or event.key == pygame.K_2 or event.key == pygame.K_3 or event.key == pygame.K_4:
-                                    question=False
-                            if q==8:
+                                    question = False
+                            if q == 8:
                                 if event.key == pygame.K_1 or event.key == pygame.K_2 or event.key == pygame.K_3 or event.key == pygame.K_4:
                                     boss.hp -= 1
-                                    answ=True
-                                    question=False
+                                    answ = True
+                                    question = False
                                                                         
 
                         if question == False and test and event.key == pygame.K_RETURN:
-                            q+=1
-                            question=True
+                            q += 1
+                            question = True
 
                         if endgame and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN):
                             mainsound.stop()      
