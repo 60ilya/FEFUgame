@@ -492,11 +492,12 @@ class Interface():
                 Item.collision(item_hitbox, player, gold_x, gold_y, map, item)
 
                 
-                if player.hp < 0:
+                if player.hp <= 0:
                     Interface.print_text(screen, "YOU DIED", 400, 350, "Red", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 150)
                     block = 1
+                    Interface.print_text(screen, "Press SPACE to continue", 430, 450, "Grey", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 45)
                     pygame.mixer.music.pause()
-                    # Interface.game.credits(screen, running)
+
                 
                 pygame.display.update()
 
@@ -511,6 +512,9 @@ class Interface():
                                 pygame.mixer.music.pause()
                             else:
                                 pygame.mixer.music.unpause()
+
+                        if player.hp<=0 and (event.key == pygame.K_RETURN or event.key == pygame.K_SPACE):
+                            Interface.game.boss_fight(screen, player, running)
 
                         if event.key == pygame.K_r:
                             pygame.mixer.music.play(-1)
@@ -636,7 +640,7 @@ class Interface():
                     screen.blit(pygame.image.load("img/boss/cat_end.jpg"),(0,0))
                     endgame=True
 
-                if player.hp==0:
+                if player.hp<=0:
                     test=False
                     screen.blit(pygame.image.load("img/boss/death.jpg"),(0,0))
                     endgame=True
