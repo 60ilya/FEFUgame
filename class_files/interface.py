@@ -55,17 +55,21 @@ class Interface():
     #миникарта
     class minimap():
 
-        def room_minimap(map, room):
+        def room_minimap(map, room, gold_x, gold_y, boss_x, boss_y, room_x, room_y):
             
             pygame.draw.rect(room, (96, 96, 96), (1065, 5, 205, 205), 10, 10)    
             
-            
-
             for i in range(10):
                 for j in range(10):
 
                     if map[i][j] in range(2, 4):
                         pygame.draw.rect(room, (160, 160, 160), (1075 + (j + 1) * 20, 15 + (i + 1) * 20, 17, 17))
+                    if map[i][j] == 2:
+                        if room_x == gold_x and room_y == gold_y:
+                            pygame.draw.rect(room, "Gold", (1075 + (j + 1) * 20, 15 + (i + 1) * 20, 17, 17))
+                            
+                        elif room_x == boss_x and room_y == boss_y:
+                            pygame.draw.rect(room, "Red", (1075 + (j + 1) * 20, 15 + (i + 1) * 20, 17, 17))
                     if map[i][j] == 2 or map[i][j] == 3:
                         if map[i][j - 1] == 1:
                             pygame.draw.rect(room, (96, 96, 96), (1075 + (j) * 20, 15 + (i + 1) * 20, 17, 17))
@@ -234,8 +238,8 @@ class Interface():
             
             return room_with_mobs
         
-        def block_rooms(mobs_list, player, screen, vertical, horizontal, map, x, y):
-            if len(mobs_list) != 0:
+        def block_rooms(mobs_list, player, screen, vertical, horizontal, map, x, y, boss_x, boss_y):
+            if len(mobs_list) != 0 or (x == boss_x and y == boss_y):
                 
                 if player.y < 222:
                     player.y = 223
@@ -437,12 +441,14 @@ class Interface():
             gold_x, gold_y, item = Interface.room.init_treasure_room(map, screen)#корды предметов
             item_hitbox = item.texture.get_rect(topleft = (570, 400))#текстуры предметов
 
+            boss_x, boss_y = Game.map.get_boss_xy(map)
+
             mobs_room = Interface.room.get_mobs_rooms(map, screen)
             
             mobs_list = []
             
             bullets = []
-            print(mobs_room)
+            block = 0
 
             while running:
                 
@@ -450,7 +456,7 @@ class Interface():
 
                 Game.map.room_inv_block(map, room_x, room_y, player)
                 
-                Interface.minimap.room_minimap(map, room)
+                Interface.minimap.room_minimap(map, room, gold_x, gold_y, boss_x, boss_y, room_x, room_y)
                 Interface.minimap.player_minimap(map, room)
                 
 
@@ -459,13 +465,15 @@ class Interface():
                 screen.blit(room, (0, 0))
 
                 screen.blit(player.texture, (player.x, player.y))
-                player.moving()
+                if block == 0:
+                    player.moving()
                 
                 Mob.spawn(map, screen, [room_x, room_y], mobs_room, mob1, mob2, mob3, mob4, mobs_list)
                 Mob.get_hitbox(mobs_list)
                 Mob.move_towards_player(mobs_list, player)
+                
 
-                Interface.room.block_rooms(mobs_list, player, screen, door_ver, door_hor, map, room_x, room_y)
+                Interface.room.block_rooms(mobs_list, player, screen, door_ver, door_hor, map, room_x, room_y, boss_x, boss_y)
                 
 
                 player.shooting(bullets, screen, egg)
@@ -478,15 +486,17 @@ class Interface():
                 Mob.collision(player, mobs_list, bullets)
                 Mob.collision_player(mobs_list, player)
                 Mob.collide_each_other(mobs_list)
-                
+                # Mob.hp_box(mobs_list, room)
 
                 Item.create_item(gold_x, gold_y, map, item.texture, screen, player)
                 Item.collision(item_hitbox, player, gold_x, gold_y, map, item)
 
                 
-                
-                
-
+                if player.hp < 0:
+                    Interface.print_text(screen, "YOU DIED", 400, 350, "Red", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 150)
+                    block = 1
+                    pygame.mixer.music.pause()
+                    # Interface.game.credits(screen, running)
                 
                 pygame.display.update()
 
@@ -495,7 +505,7 @@ class Interface():
                         running = False
                         pygame.quit()
                     elif event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_m:
+                        if event.key == pygame.K_m  and block == 0:
                             Interface.flPause = not Interface.flPause
                             if Interface.flPause:
                                 pygame.mixer.music.pause()
@@ -503,6 +513,7 @@ class Interface():
                                 pygame.mixer.music.unpause()
 
                         if event.key == pygame.K_r:
+                            pygame.mixer.music.play(-1)
                             Interface.game.main_game(screen, choose)
 
 
@@ -513,19 +524,19 @@ class Interface():
                         if event.key == pygame.K_ESCAPE:
                             Interface.menu.main_menu(screen, running)
                         
-                        if event.key == pygame.K_LEFT:
+                        if event.key == pygame.K_LEFT and block == 0:
                             if len(bullets) < 5:
                                 bullets.append(Arrow(player.x + 35, player.y + 35, "a", egg))
 
-                        if event.key == pygame.K_RIGHT:
+                        if event.key == pygame.K_RIGHT and block == 0:
                             if len(bullets) < 5:
                                 bullets.append(Arrow(player.x + 35, player.y + 35, "d", egg))
                             
-                        if event.key == pygame.K_UP:
+                        if event.key == pygame.K_UP and block == 0:
                             if len(bullets) < 5:
                                 bullets.append(Arrow(player.x + 35, player.y + 35, "w", egg))
                                 
-                        if event.key == pygame.K_DOWN:
+                        if event.key == pygame.K_DOWN and block == 0:
                             if len(bullets) < 5:
                                 bullets.append(Arrow(player.x + 35, player.y + 35, "s", egg))
 

@@ -36,6 +36,7 @@ class Player(Character):
                 if map[x][y] == 2:
                     xy = [x, y]
                     return xy
+                
 
     #функция для передвижения персонажа
     def moving(self):
@@ -250,6 +251,10 @@ class Mob():
                     mobs2.x -= 30
                     mobs2.y -= 30
 
+    def hp_box(mobs_list, room):
+        if len(mobs_list) != 0:
+            for mob in mobs_list:
+                pygame.draw.rect(room, (96, 96, 96), (mob.x, mob.y + 80, 50, 10))
 
 #класс босса
 class Boss:
