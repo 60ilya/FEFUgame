@@ -325,7 +325,7 @@ class Item:
                 gold_x, gold_y = 9, 9
 
 
-
+##############################################################################################
 
 #класс хилки
 class HealthPotion(Item):
@@ -342,6 +342,8 @@ class HealthPotion(Item):
             player.item = True
             player.hp += 1
 
+
+##############################################################################################
 #класс буста на скорость 
 class SpeedBoost(Item):
     def __init__(self, texture):
@@ -356,6 +358,8 @@ class SpeedBoost(Item):
         if player.item == False:
             player.item = True
             player.speed += 0.5
+
+##############################################################################################
 
 #класс буста силы
 class DamageBoost(Item):
