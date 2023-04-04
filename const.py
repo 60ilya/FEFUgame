@@ -48,6 +48,7 @@ mob_downy = 410
 
 #                                                           KEYBOARD SETTINGS
 #                                        Example: switch mov_up to key O will be: mov_up = pygame.K_o
+
 #MOVING               
 mov_up = pygame.K_w
 mov_down = pygame.K_s

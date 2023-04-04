@@ -2,6 +2,8 @@ from const import L, R, U, D, DL, UD, UDL, UL, UR, URD, URDL, URL, RD, RDL, RL
 import random
 import math
 
+##############################################################################################
+
 class Game():
     #проверка массива для миникарты
     def array_check(map, x, y, n):
@@ -18,6 +20,9 @@ class Game():
             elif x - 1 > -1 and map[x - 1][y] == 0: # check U
                 if map[x - 2][y] == 0 and map[x - 1][y + 1] == 0 and map[x - 1][y - 1] == 0: # check URL
                     map[x - 1][y] = n
+
+##############################################################################################
+                 
     class map():#создание невидимого блока
         def room_inv_block(map, x, y, player):
             if map[x - 1][y] == 0:
@@ -32,7 +37,9 @@ class Game():
             if map[x][y + 1] == 0:
                 if player.x > 972:
                     player.x = 971
-        #согдание карндомной карты
+
+
+        #создание карндомной карты
         def rand_map():
             count = 0
             flag = False
@@ -293,5 +300,3 @@ class Game():
                 for x in range(10):
                     if map[x][y] == 4:
                         return x, y
-                    # else:
-                    #     return 0, 0

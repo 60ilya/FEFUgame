@@ -1,8 +1,9 @@
 import pygame
 import math
-import random
 from const import mob_downx, mob_downy, mob_leftx, mob_lefty, mob_rightx, mob_righty, mob_upx, mob_upy
 from const import mov_up, mov_right, mov_down, mov_left
+
+##############################################################################################
 
 #основной класс
 class Character():
@@ -16,6 +17,9 @@ class Character():
         self.x = x
         self.y = y
         self.item = item
+
+##############################################################################################
+
 #класс игрока
 class Player(Character):
     def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y, item):
@@ -129,14 +133,14 @@ class Player(Character):
             elif self.y > 223 or (self.x > 570 and self.x < 650):
                 self.y -= self.speed
 
-
+##############################################################################################
 
 #класс воина
 class Warrior(Player):
     def __init__(self, texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y, item):
         super().__init__(texture, hitbox, hp, damage, speed, diagonal_speed, shield, x, y, item)
 
-
+##############################################################################################
 
 #класс лучника
 class Archer(Player):
@@ -162,9 +166,7 @@ class Archer(Player):
         for bullet in bullets:
             bullet.draw(screen, egg)
             
-    
-
-
+##############################################################################################
 
 class Mob():
     image = pygame.image.load("img/enemy/mobs/cats.png")
@@ -256,6 +258,8 @@ class Mob():
             for mob in mobs_list:
                 pygame.draw.rect(room, (96, 96, 96), (mob.x, mob.y + 80, 50, 10))
 
+##############################################################################################
+
 #класс босса
 class Boss:
     def __init__(self, texture, hp, damage, speed, x, y):
@@ -266,22 +270,24 @@ class Boss:
         self.x = x
         self.y = y
         self.alive = True    
+        self.hitbox = self.texture.get_rect(topleft=(self.x, self.y))
 
-    def spawn(map, screen, boss):
-        screen.blit(boss.texture, (boss.x, boss.y))
+    def spawn(self, screen):
+        screen.blit(self.texture, (self.x, self.y))
 
-    def get_hitbox(boss):
-        boss.hitbox = boss.texture.get_rect(topleft=(boss.x, boss.y))
+    def get_hitbox(self):
+        self.hitbox = self.texture.get_rect(topleft=(self.x, self.y))
 
-    def move_towards_player(boss, player):
-            if boss.hitbox.colliderect(player.hitbox) == False:
-                dx, dy = player.x - boss.x, player.y - boss.y
+    def move_towards_player(self, player):
+            if self.hitbox.colliderect(player.hitbox) == False:
+                dx, dy = player.x - self.x, player.y - self.y
                 dist = math.hypot(dx, dy)
                 dx, dy = dx / dist, dy / dist  # Normalize.
                 # Move along this normalized vector towards the player at current speed.
-                boss.x += dx * boss.speed
-                boss.y += dy * boss.speed
+                self.x += dx * self.speed
+                self.y += dy * self.speed
 
+##############################################################################################
 #класс стрелы
 class Arrow:
     image = pygame.image.load("img/shoot/egg.png")

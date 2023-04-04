@@ -6,6 +6,7 @@ from const import door_up, door_down, door_left, door_right, door_up_open, door_
 from const import mov_right, mov_left, shoot_down, shoot_left, shoot_right, shoot_up
 import random
 
+##############################################################################################
 
 class Interface():
 
@@ -13,10 +14,12 @@ class Interface():
     off = pygame.image.load("img/sound/off.png")
     flPause = False
 
+
     def print_text(screen, message, x, y, font_color=(0, 0, 0), font_type = "", font_size = 0):
         font_type = pygame.font.Font(font_type, font_size)
         text = font_type.render(message, True, font_color)
         screen.blit(text, (x, y))
+
 
     def print_stat(screen, player):
         Interface.print_text(screen, "hp", 50, 50, "Red", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 70)
@@ -28,11 +31,10 @@ class Interface():
         Interface.print_text(screen, f"{player.damage}", 100, 340, "White", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 40)
         Interface.print_text(screen, f"{player.speed}", 100, 300, "White", "fonts/SuperWebcomicBros_Rusbyyakustick_-Regular_0.ttf", 40)  
 
+
     def intro(screen, running):
         intro2 = Video("video/intro_max.mp4")
         intro2.set_size((1280, 768)) 
-        flag = True
-        
 
         while running:
             if intro2.active == False:
@@ -53,7 +55,8 @@ class Interface():
                         if event.key == pygame.K_SPACE:
                             intro2.close()
                             Interface.menu.main_menu(screen, running)
-    #миникарта
+
+##############################################################################################
     class minimap():
 
         def room_minimap(map, room, gold_x, gold_y, boss_x, boss_y, room_x, room_y):
@@ -100,12 +103,13 @@ class Interface():
                             pygame.draw.rect(room, "Gold", (1075 + (j + 1) * 20, 15 + (i + 2) * 20, 17, 17))
 
                     
-
         def player_minimap(map, room):
             for i in range(10):
                 for j in range(10):
                     if map[i][j] == 2:
                         pygame.draw.rect(room, "Green", (1078 + (j + 1) * 20, 18 + (i + 1) * 20, 11, 11))
+
+##############################################################################################
 
     class room():
         D = "img/rooms/d.jpeg"
@@ -126,6 +130,7 @@ class Interface():
 
         door_hor = pygame.image.load("img/doors/horizontal.png")
         door_ver = pygame.image.load("img/doors/vertical.png")
+
 
         def room_changing(player, map, room_x, room_y, room, bullets, mobs_list, mob1, mob2, mob3, mob4, mobs_room): 
             if player.x < 226 and map[room_x][room_y - 1] != 0:
@@ -205,6 +210,7 @@ class Interface():
             
             return room, room_x, room_y
         
+
         def init_treasure_room(map, screen):
             tx, ty = 0, 0
 
@@ -230,6 +236,7 @@ class Interface():
 
             return tx, ty, main_item
         
+
         def get_mobs_rooms(map, screen):
             room_with_mobs = []
             for y in range(10):
@@ -239,6 +246,7 @@ class Interface():
             
             return room_with_mobs
         
+
         def block_rooms(mobs_list, player, screen, vertical, horizontal, map, x, y, boss_x, boss_y):
             if len(mobs_list) != 0 or (x == boss_x and y == boss_y):
                 
@@ -273,9 +281,8 @@ class Interface():
                 if map[x - 1][y] != 0:
                     screen.blit(horizontal, door_up_open)
 
+############################################################################################## 
         
-        
-    #главная заставка + выбор персонажа
     class menu():
         def player_choose(screen, running):
 
@@ -403,7 +410,7 @@ class Interface():
                             pygame.quit()
                             
 
-                
+##############################################################################################           
    
     class game():
         def main_game(screen, choose):
@@ -436,7 +443,7 @@ class Interface():
             mob3 = Mob(10, 1, cats, 0.5, 650, 400, None, "r")
             mob4 = Mob(10, 1, cats, 0.5, 580, 390, None, "u")
 
-            boss = Boss(pygame.image.load("img/boss/klunin5.png"), 10, 1, 0.5, 500, 300)
+            boss = Boss(pygame.image.load("img/enemy/lenin.png"), 10, 1, 1.2, 400, 400)
 
             
 
@@ -494,11 +501,11 @@ class Interface():
                 Item.collision(item_hitbox, player, gold_x, gold_y, map, item)
 
 # Действия в комнате босса
-                if room_x==boss_x and room_y==boss_y:
+                if room_x == boss_x and room_y == boss_y:
                     block = 1
-                    Boss.spawn(map, screen, boss)
-                    Boss.get_hitbox(boss)
-                    Boss.move_towards_player(boss, player)
+                    boss.spawn(screen)
+                    boss.get_hitbox()
+                    boss.move_towards_player(player)
                     if player.hitbox.colliderect(boss.hitbox):
                         pygame.mixer.music.pause()
                         Interface.game.boss_fight(screen, player, running)
@@ -517,7 +524,7 @@ class Interface():
                         running = False
                         pygame.quit()
                     elif event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_m  and block == 0:
+                        if event.key == pygame.K_m and block == 0:
                             Interface.flPause = not Interface.flPause
                             if Interface.flPause:
                                 pygame.mixer.music.pause()
@@ -625,30 +632,38 @@ class Interface():
                     
                     if question:
 
-                        if q == 1: screen.blit(pygame.image.load("img/boss/test.png"), (570, 200))
-                        if q == 2: screen.blit(pygame.image.load("img/boss/test2.png"), (570, 200))
-                        if q == 3: screen.blit(pygame.image.load("img/boss/test3.png"), (570, 200))
-                        if q == 4: screen.blit(pygame.image.load("img/boss/test4.png"), (570, 200))
-                        if q == 5: screen.blit(pygame.image.load("img/boss/test5.png"), (570, 200))
-                        if q == 6: screen.blit(pygame.image.load("img/boss/test6.png"), (570, 200))
-                        if q == 7: screen.blit(pygame.image.load("img/boss/test7.png"), (570, 200))
-                        if q == 8: screen.blit(pygame.image.load("img/boss/test8.png"), (570, 200))
+                        if q == 1:
+                            screen.blit(pygame.image.load("img/boss/test.png"), (570, 200))
+                        if q == 2:
+                            screen.blit(pygame.image.load("img/boss/test2.png"), (570, 200))
+                        if q == 3:
+                            screen.blit(pygame.image.load("img/boss/test3.png"), (570, 200))
+                        if q == 4:
+                            screen.blit(pygame.image.load("img/boss/test4.png"), (570, 200))
+                        if q == 5:
+                            screen.blit(pygame.image.load("img/boss/test5.png"), (570, 200))
+                        if q == 6:
+                            screen.blit(pygame.image.load("img/boss/test6.png"), (570, 200))
+                        if q == 7:
+                            screen.blit(pygame.image.load("img/boss/test7.png"), (570, 200))
+                        if q == 8:
+                            screen.blit(pygame.image.load("img/boss/test8.png"), (570, 200))
                             
                     else:
                         if answ: 
-                            screen.blit(goodtest,(600,200))
+                            screen.blit(goodtest,(600, 200))
                         else: 
-                            screen.blit(badtest,(600,200))
+                            screen.blit(badtest, (600, 200))
                     
                 if boss.hp == 0:
                     test = False
                     screen.blit(pygame.image.load("img/boss/cat_end.jpg"), (0, 0))
                     endgame = True
 
-                if player.hp<=0:
-                    test=False
-                    screen.blit(pygame.image.load("img/boss/death.jpg"),(0,0))
-                    endgame=True
+                if player.hp <= 0:
+                    test = False
+                    screen.blit(pygame.image.load("img/boss/death.jpg"), (0, 0))
+                    endgame = True
 
                 if badend:
                     screen.blit(pygame.image.load("img/boss/badbad.jpg"), (0, 0))
@@ -755,13 +770,10 @@ class Interface():
                             Interface.game.credits(screen, running)
                         
 
-
         def credits(screen, running):
             credits = Video("video/credits.mp4")
             credits.set_size((1280, 768)) 
-            flag = True
             
-
             while running:
                 if credits.active == False:
                     Interface.menu.main_menu(screen, running)
